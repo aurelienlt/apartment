@@ -1,0 +1,9 @@
+# Python
+.venv/
+__pycache__/
+
+# Blender backup copies (file.blend1, .blend2...)
+*.blend[0-9]
+
+# LibreOffice lock files
+.~lock.*#

@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 215.0 870.0" width="860" height="3480">
+  <rect width="100%" height="100%" fill="white"/>
+  <text x="107.50" y="12.00" font-size="10" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.80" paint-order="stroke">Kitchen - top wall</text>
+  <text x="25.00" y="34.00" font-size="7.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.26" paint-order="stroke">Top view</text>
+  <rect x="25.00" y="48.00" width="140.00" height="10.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="165.00" y="48.00" width="25.00" height="130.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="58.00" width="80.00" height="80.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="58.00" width="80.00" height="80.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="105.00" y="58.00" width="30.00" height="110.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="135.00" y="128.00" width="30.00" height="40.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="45.00" y="68.00" width="60.00" height="60.00" fill="#151515" stroke="#555555" stroke-width="0.15"/>
+  <rect x="30.00" y="58.00" width="90.00" height="50.00" fill="#1e1e1e" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="58.00" width="1.00" height="80.00" fill="#bfe3ef" stroke="#555555" stroke-width="0.15" fill-opacity="0.35"/>
+  <rect x="135.00" y="58.00" width="30.00" height="70.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="130.00" y="58.00" width="5.00" height="110.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="135.00" y="128.00" width="30.00" height="40.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="58.00" width="40.00" height="50.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="58.00" width="40.00" height="50.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="65.00" y="58.00" width="20.00" height="50.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="125.00" y="58.00" width="5.00" height="50.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <line x1="165.00" y1="187.00" x2="135.00" y2="187.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="188.00" x2="166.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="188.00" x2="136.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="150.00" y="182.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="135.00" y1="187.00" x2="105.00" y2="187.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="188.00" x2="136.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="188.00" x2="106.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="120.00" y="182.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="105.00" y1="187.00" x2="25.00" y2="187.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="188.00" x2="106.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="188.00" x2="26.00" y2="186.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="65.00" y="182.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">80</text>
+  <line x1="165.00" y1="199.00" x2="25.00" y2="199.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="200.00" x2="166.00" y2="198.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="200.00" x2="26.00" y2="198.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="95.00" y="194.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">140</text>
+  <line x1="45.00" y1="134.00" x2="25.00" y2="134.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="44.00" y1="135.00" x2="46.00" y2="133.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="135.00" x2="26.00" y2="133.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="35.00" y="129.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">20</text>
+  <line x1="105.00" y1="134.00" x2="45.00" y2="134.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="135.00" x2="106.00" y2="133.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="44.00" y1="135.00" x2="46.00" y2="133.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="75.00" y="129.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">60</text>
+  <line x1="109.00" y1="58.00" x2="109.00" y2="108.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="108.00" y1="59.00" x2="110.00" y2="57.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="108.00" y1="109.00" x2="110.00" y2="107.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="104.60" y="83.00" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke" transform="rotate(-90 104.60 83.00)">50</text>
+  <line x1="19.00" y1="58.00" x2="19.00" y2="138.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="18.00" y1="59.00" x2="20.00" y2="57.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="18.00" y1="139.00" x2="20.00" y2="137.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="14.60" y="98.00" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke" transform="rotate(-90 14.60 98.00)">80</text>
+  <line x1="150.00" y1="58.00" x2="150.00" y2="128.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="149.00" y1="59.00" x2="151.00" y2="57.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="149.00" y1="129.00" x2="151.00" y2="127.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="145.60" y="93.00" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke" transform="rotate(-90 145.60 93.00)">70</text>
+  <text x="25.00" y="216.00" font-size="7.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.26" paint-order="stroke">Front view</text>
+  <rect x="25.00" y="230.00" width="140.00" height="250.00" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="165.00" y="230.00" width="25.00" height="250.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <line x1="17.00" y1="480.00" x2="190.00" y2="480.00" stroke="#222222" stroke-width="0.4"/>
+  <line x1="25.00" y1="230.00" x2="190.00" y2="230.00" stroke="#222222" stroke-width="0.3"/>
+  <rect x="25.00" y="394.00" width="80.00" height="78.00" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="240.00" width="40.00" height="64.50" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="240.00" width="40.00" height="64.50" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="69.00" y="230.00" width="12.00" height="77.00" fill="#1e1e1e" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="281.33" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="261.17" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="281.33" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="261.17" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="63.00" y="240.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="240.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="302.50" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="240.00" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="230.00" width="40.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="123.00" y="240.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="240.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="302.50" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="240.00" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="230.00" width="40.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="65.00" y="230.00" width="20.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="30.00" y="307.00" width="90.00" height="15.00" fill="#1e1e1e" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.30" y="238.00" width="39.40" height="69.00" fill="#456455" stroke="#555555" stroke-width="0.15"/>
+  <text x="45.00" y="272.50" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTT1da</text>
+  <rect x="85.30" y="238.00" width="39.40" height="69.00" fill="#efeee8" stroke="#555555" stroke-width="0.15"/>
+  <text x="105.00" y="272.50" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTT1db</text>
+  <rect x="65.30" y="238.00" width="19.40" height="69.00" fill="#849897" stroke="#555555" stroke-width="0.15"/>
+  <text x="75.00" y="272.50" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTT1f</text>
+  <rect x="125.00" y="230.00" width="5.00" height="77.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="135.00" y="230.00" width="30.00" height="250.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="45.00" y="389.00" width="60.00" height="1.00" fill="#151515" stroke="#555555" stroke-width="0.15"/>
+  <line x1="48.00" y1="392.00" x2="55.00" y2="392.00" stroke="#5a5a5a" stroke-width="0.6"/>
+  <rect x="25.00" y="472.00" width="80.00" height="8.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="394.00" width="80.00" height="6.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="103.00" y="394.00" width="2.00" height="78.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="394.00" width="2.00" height="78.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="470.00" width="76.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.30" y="435.75" width="79.40" height="36.25" fill="#23343e" stroke="#555555" stroke-width="0.15"/>
+  <text x="65.00" y="453.88" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTB1da</text>
+  <rect x="25.30" y="397.00" width="79.40" height="36.25" fill="#456455" stroke="#555555" stroke-width="0.15"/>
+  <text x="65.00" y="415.12" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTB1db</text>
+  <rect x="25.00" y="390.00" width="80.00" height="4.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="307.00" width="1.00" height="83.00" fill="#bfe3ef" stroke="#555555" stroke-width="0.15" fill-opacity="0.35"/>
+  <rect x="105.00" y="390.00" width="30.00" height="4.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="105.00" y="394.00" width="30.00" height="78.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="130.00" y="230.00" width="5.00" height="89.50" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <line x1="165.00" y1="226.00" x2="135.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="227.00" x2="166.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="227.00" x2="136.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="150.00" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="135.00" y1="226.00" x2="130.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="227.00" x2="136.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="129.00" y1="227.00" x2="131.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="132.50" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">5</text>
+  <line x1="130.00" y1="226.00" x2="125.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="129.00" y1="227.00" x2="131.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="124.00" y1="227.00" x2="126.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="127.50" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">5</text>
+  <line x1="125.00" y1="226.00" x2="85.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="124.00" y1="227.00" x2="126.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="84.00" y1="227.00" x2="86.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="105.00" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">40</text>
+  <line x1="85.00" y1="226.00" x2="65.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="84.00" y1="227.00" x2="86.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="64.00" y1="227.00" x2="66.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="75.00" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">20</text>
+  <line x1="65.00" y1="226.00" x2="25.00" y2="226.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="64.00" y1="227.00" x2="66.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="227.00" x2="26.00" y2="225.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="45.00" y="221.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">40</text>
+  <line x1="120.00" y1="326.00" x2="30.00" y2="326.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="119.00" y1="327.00" x2="121.00" y2="325.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="29.00" y1="327.00" x2="31.00" y2="325.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="75.00" y="321.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">90</text>
+  <line x1="165.00" y1="489.00" x2="135.00" y2="489.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="490.00" x2="166.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="490.00" x2="136.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="150.00" y="484.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="135.00" y1="489.00" x2="105.00" y2="489.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="490.00" x2="136.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="490.00" x2="106.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="120.00" y="484.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="105.00" y1="489.00" x2="25.00" y2="489.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="490.00" x2="106.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="490.00" x2="26.00" y2="488.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="65.00" y="484.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">80</text>
+  <line x1="165.00" y1="501.00" x2="25.00" y2="501.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="502.00" x2="166.00" y2="500.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="502.00" x2="26.00" y2="500.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="95.00" y="496.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">140</text>
+  <text x="25.00" y="518.00" font-size="7.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.26" paint-order="stroke">Colors (set 2)</text>
+  <rect x="25.00" y="526.00" width="12.00" height="10.00" fill="#efeee8" stroke="#555555" stroke-width="0.15"/>
+  <text x="39.00" y="531.00" font-size="6.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="1.08" paint-order="stroke">c1 LL2275</text>
+  <rect x="79.40" y="526.00" width="12.00" height="10.00" fill="#849897" stroke="#555555" stroke-width="0.15"/>
+  <text x="93.40" y="531.00" font-size="6.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="1.08" paint-order="stroke">c2 LL2261</text>
+  <rect x="133.80" y="526.00" width="12.00" height="10.00" fill="#456455" stroke="#555555" stroke-width="0.15"/>
+  <text x="147.80" y="531.00" font-size="6.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="1.08" paint-order="stroke">c3 LL2272</text>
+  <rect x="25.00" y="542.00" width="12.00" height="10.00" fill="#23343e" stroke="#555555" stroke-width="0.15"/>
+  <text x="39.00" y="547.00" font-size="6.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="1.08" paint-order="stroke">c4 LL2268</text>
+  <text x="25.00" y="570.00" font-size="7.0" fill="#222222" text-anchor="start" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.26" paint-order="stroke">Open view</text>
+  <rect x="25.00" y="584.00" width="140.00" height="250.00" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="165.00" y="584.00" width="25.00" height="250.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <line x1="17.00" y1="834.00" x2="190.00" y2="834.00" stroke="#222222" stroke-width="0.4"/>
+  <line x1="25.00" y1="584.00" x2="190.00" y2="584.00" stroke="#222222" stroke-width="0.3"/>
+  <rect x="25.00" y="748.00" width="80.00" height="78.00" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="594.00" width="40.00" height="64.50" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="594.00" width="40.00" height="64.50" fill="#d9d9d9" stroke="#555555" stroke-width="0.15"/>
+  <rect x="69.00" y="584.00" width="12.00" height="77.00" fill="#1e1e1e" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="635.33" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="615.17" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="635.33" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="615.17" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="63.00" y="594.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="594.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="656.50" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="594.00" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="584.00" width="40.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="123.00" y="594.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="594.00" width="2.00" height="64.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="656.50" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="87.00" y="594.00" width="36.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="85.00" y="584.00" width="40.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="65.00" y="584.00" width="20.00" height="10.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="30.00" y="661.00" width="90.00" height="15.00" fill="#1e1e1e" stroke="#555555" stroke-width="0.15"/>
+  <rect x="65.30" y="592.00" width="19.40" height="69.00" fill="#849897" stroke="#555555" stroke-width="0.15"/>
+  <text x="75.00" y="626.50" font-size="5.6" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold" stroke="white" stroke-width="1.01" paint-order="stroke">KTT1f</text>
+  <rect x="125.00" y="584.00" width="5.00" height="77.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="135.00" y="584.00" width="30.00" height="250.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="45.00" y="743.00" width="60.00" height="1.00" fill="#151515" stroke="#555555" stroke-width="0.15"/>
+  <line x1="48.00" y1="746.00" x2="55.00" y2="746.00" stroke="#5a5a5a" stroke-width="0.6"/>
+  <rect x="25.00" y="826.00" width="80.00" height="8.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="748.00" width="80.00" height="6.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="103.00" y="748.00" width="2.00" height="78.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="748.00" width="2.00" height="78.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.00" y="824.00" width="76.00" height="2.00" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.80" y="794.75" width="74.40" height="31.25" fill="#f6f6f6" stroke="#555555" stroke-width="0.15"/>
+  <rect x="100.70" y="794.75" width="1.50" height="31.25" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.80" y="794.75" width="1.50" height="31.25" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.80" y="824.50" width="74.40" height="1.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <text x="65.00" y="810.38" font-size="4.8" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.86" paint-order="stroke">Drawer KTB1da</text>
+  <rect x="27.80" y="756.00" width="74.40" height="31.25" fill="#f6f6f6" stroke="#555555" stroke-width="0.15"/>
+  <rect x="100.70" y="756.00" width="1.50" height="31.25" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.80" y="756.00" width="1.50" height="31.25" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <rect x="27.80" y="785.75" width="74.40" height="1.50" fill="#ffffff" stroke="#555555" stroke-width="0.15"/>
+  <text x="65.00" y="771.62" font-size="4.8" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.86" paint-order="stroke">Drawer KTB1db</text>
+  <rect x="25.00" y="744.00" width="80.00" height="4.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="25.00" y="661.00" width="1.00" height="83.00" fill="#bfe3ef" stroke="#555555" stroke-width="0.15" fill-opacity="0.35"/>
+  <rect x="25.00" y="592.00" width="2.00" height="69.00" fill="#456455" stroke="#555555" stroke-width="0.15"/>
+  <text x="26.00" y="626.50" font-size="4.4" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.79" paint-order="stroke" transform="rotate(-90 26.00 626.50)">KTT1da</text>
+  <rect x="123.00" y="592.00" width="2.00" height="69.00" fill="#efeee8" stroke="#555555" stroke-width="0.15"/>
+  <text x="124.00" y="626.50" font-size="4.4" fill="#222222" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.79" paint-order="stroke" transform="rotate(-90 124.00 626.50)">KTT1db</text>
+  <rect x="105.00" y="744.00" width="30.00" height="4.00" fill="#f3f1ec" stroke="#555555" stroke-width="0.15"/>
+  <rect x="105.00" y="748.00" width="30.00" height="78.00" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <rect x="130.00" y="584.00" width="5.00" height="89.50" fill="#4a4a4a" stroke="#555555" stroke-width="0.15"/>
+  <line x1="165.00" y1="580.00" x2="135.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="581.00" x2="166.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="581.00" x2="136.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="150.00" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="135.00" y1="580.00" x2="130.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="581.00" x2="136.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="129.00" y1="581.00" x2="131.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="132.50" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">5</text>
+  <line x1="130.00" y1="580.00" x2="125.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="129.00" y1="581.00" x2="131.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="124.00" y1="581.00" x2="126.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="127.50" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">5</text>
+  <line x1="125.00" y1="580.00" x2="85.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="124.00" y1="581.00" x2="126.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="84.00" y1="581.00" x2="86.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="105.00" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">40</text>
+  <line x1="85.00" y1="580.00" x2="65.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="84.00" y1="581.00" x2="86.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="64.00" y1="581.00" x2="66.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="75.00" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">20</text>
+  <line x1="65.00" y1="580.00" x2="25.00" y2="580.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="64.00" y1="581.00" x2="66.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="581.00" x2="26.00" y2="579.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="45.00" y="575.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">40</text>
+  <line x1="120.00" y1="680.00" x2="30.00" y2="680.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="119.00" y1="681.00" x2="121.00" y2="679.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="29.00" y1="681.00" x2="31.00" y2="679.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="75.00" y="675.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">90</text>
+  <line x1="165.00" y1="843.00" x2="135.00" y2="843.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="844.00" x2="166.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="844.00" x2="136.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="150.00" y="838.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="135.00" y1="843.00" x2="105.00" y2="843.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="134.00" y1="844.00" x2="136.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="844.00" x2="106.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="120.00" y="838.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">30</text>
+  <line x1="105.00" y1="843.00" x2="25.00" y2="843.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="104.00" y1="844.00" x2="106.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="844.00" x2="26.00" y2="842.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="65.00" y="838.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">80</text>
+  <line x1="165.00" y1="855.00" x2="25.00" y2="855.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="164.00" y1="856.00" x2="166.00" y2="854.00" stroke="#b03030" stroke-width="0.12"/>
+  <line x1="24.00" y1="856.00" x2="26.00" y2="854.00" stroke="#b03030" stroke-width="0.12"/>
+  <text x="95.00" y="850.60" font-size="5.2" fill="#b03030" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="normal" stroke="white" stroke-width="0.94" paint-order="stroke">140</text>
+</svg>
