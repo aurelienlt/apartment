@@ -3,9 +3,11 @@
 Usage:
     python3 svg_plan.py [--out DIR]
     blender -b --python svg_plan.py -- --blend kitchen_plan.blend
+    blender -b --python svg_plan.py -- --apartment-svgs plans
 
-Writes plans/kitchen_<wall>_colors<N>.svg for every wall and color set, or
-builds the apartment of kitchen.py with this kitchen in Blender.
+Writes plans/kitchen_<wall>_colors<N>.svg for every wall and color set; inside
+Blender, builds the apartment (apartment.py) with this kitchen, or draws its
+floor plan for every furniture layout.
 
 Each wall gets one SVG with three views, all sharing the same horizontal axis:
     - top: seen from above (upper cabinets, stone slab, plank table)
@@ -890,11 +892,11 @@ def draw_drawer_box(svg, front, X, Z):
 
 # --- Blender scene ----------------------------------------------------------------
 #
-# The apartment comes from kitchen.py; its kitchen is replaced by the three
-# plans above, each placed on its wall. Run inside Blender:
+# The apartment comes from apartment.py; the kitchen is the three plans above,
+# each placed on its wall. Run inside Blender:
 #     blender -b --python svg_plan.py -- --blend kitchen_plan.blend
 
-# Plan (s, d) to apartment plan (x, y), kitchen.py coordinates: origin at the
+# Plan (s, d) to apartment plan (x, y), apartment.py coordinates: origin at the
 # top-right corner, x to the right, y up. L is the plan length.
 FRAMES = {
     "left": lambda s, d, L: (-300 + d, -s),     # kitchen's left wall, s from the top wall
@@ -903,7 +905,6 @@ FRAMES = {
 }
 # Doors opened less than 90 degrees in the 3D open view, by ID.
 OPEN_ANGLES = {"KLB5da": 80}      # the cabinet under the table
-ENTRANCE_ANGLE = 95               # the apartment's entrance door, in the 3D view
 
 
 def open_door(box):
@@ -950,7 +951,7 @@ def door_shelf(rack, door, opened):
 
 
 def plank_wood(k):
-    """Medium light wood with the same grain as kitchen.py's light wood,
+    """Medium light wood with the same grain as apartment.py's light wood,
     stretched along X like its dark wood."""
     mat, bsdf = k.principled("Plank Wood", k.hex_color(COLORS["plank"]), 0.45)
     r, g, b = k.hex_color(COLORS["plank"])
@@ -1037,17 +1038,15 @@ def build_curtain(k, col):
 
 
 def build_scene3d():
-    """The apartment of kitchen.py with this kitchen; returns (kitchen module, scene)."""
+    """The apartment of apartment.py with this kitchen; returns (apartment module, scene)."""
     import sys
     import bpy
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    import kitchen as k
+    import apartment as k
 
-    # Values from svg-plan.txt that differ from kitchen.py.
+    # Keep the apartment in step with the plans' ceiling and corner section.
     k.WALL_HEIGHT = CEILING
     k.DENT_WIDTH, k.DENT_HEIGHT = TOP_DENT_WIDTH, TOP_DENT_DEPTH
-    k.ENTRY_DOOR_ANGLE = ENTRANCE_ANGLE
-    k.WALL_PAINT = False              # plain white walls outside the kitchen
 
     scene = k.reset_scene()
     mats = k.make_materials()
@@ -1216,22 +1215,28 @@ def material_color(obj):
 
 
 def build_apartment_svgs(out_dir):
-    """plans/apartment_layout<N>.svg for every furniture layout of kitchen.py."""
+    """plans/apartment_layout<N><b>.svg for every furniture layout N and
+    bathroom layout b of apartment.py."""
     import bpy
     k, scene = build_scene3d()
     bpy.context.view_layer.update()
     layers = scene.view_layers[0].layer_collection.children
     for n in k.LAYOUTS:
-        closet = n in k.CLOSET_LAYOUTS
-        others = {f"Layout {m}" for m in k.LAYOUTS if m != n}
-        others.add("No Closet" if closet else "Bedroom 1 Closet")
-        for m in k.LAYOUTS:   # only layout n (and its closet variant) switched on
-            layers[f"Layout {m}"].exclude = m != n
-        layers["Bedroom 1 Closet"].exclude = not closet
-        layers["No Closet"].exclude = closet
-        bpy.context.view_layer.update()
-        path = os.path.join(out_dir, f"apartment_layout{n}.svg")
-        apartment_svg(k, scene, path, f"Apartment - layout {n}", others)
+        for bath in k.BATHROOM_LAYOUTS:
+            closet = n in k.CLOSET_LAYOUTS
+            others = {f"Layout {m}" for m in k.LAYOUTS if m != n}
+            others |= {f"Bathroom {b}" for b in k.BATHROOM_LAYOUTS if b != bath}
+            others.add("No Closet" if closet else "Bedroom 1 Closet")
+            # Only layout n, bathroom `bath` and the closet variant switched on.
+            for m in k.LAYOUTS:
+                layers[f"Layout {m}"].exclude = m != n
+            for b in k.BATHROOM_LAYOUTS:
+                layers[f"Bathroom {b}"].exclude = b != bath
+            layers["Bedroom 1 Closet"].exclude = not closet
+            layers["No Closet"].exclude = closet
+            bpy.context.view_layer.update()
+            path = os.path.join(out_dir, f"apartment_layout{n}{bath}.svg")
+            apartment_svg(k, scene, path, f"Apartment - layout {n}, bathroom {bath}", others)
 
 
 def apartment_svg(k, scene, path, title, skipped_layouts):

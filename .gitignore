@@ -2,8 +2,21 @@
 .venv/
 __pycache__/
 
-# Blender backup copies (file.blend1, .blend2...)
+# Blender files, all generated (make plan-blend), and their backups (.blend1...)
+*.blend
 *.blend[0-9]
 
 # LibreOffice lock files
 .~lock.*#
+
+# Generated files: SVG plans (make plans), renders, views
+plans/
+renders/
+views/
+
+# Images, PDFs and archives (photos, scans, exports)
+*.jpg
+*.jpeg
+*.png
+*.pdf
+*.zip
