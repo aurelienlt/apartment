@@ -34,7 +34,7 @@ from dataclasses import dataclass, field
 
 # --- Construction rules (svg-plan.txt) ---------------------------------------
 
-CEILING = 250
+CEILING = 260
 BOARD = 2                     # all wood
 GAP = 0.3                     # between adjacent fronts
 HANDLE = 2.5                  # finger gap next to each front, used as handle
@@ -310,7 +310,9 @@ class Builder:
 
 # --- Left plan ------------------------------------------------------------------
 
-LEFT_WALL_LENGTH = 345
+# The kitchen's left wall (apartment.py KITCHEN_DEPTH, 338.1) and the end of the
+# hall wall below it (INT_WALL, 10).
+LEFT_WALL_LENGTH = 348.1
 TOP_WALL_CUT = 15
 
 
@@ -1236,10 +1238,11 @@ def build_apartment_svgs(out_dir):
             layers["No Closet"].exclude = closet
             bpy.context.view_layer.update()
             path = os.path.join(out_dir, f"apartment_layout{n}{bath}.svg")
-            apartment_svg(k, scene, path, f"Apartment - layout {n}, bathroom {bath}", others)
+            apartment_svg(k, scene, path, f"Apartment - layout {n}, bathroom {bath}", others,
+                          bath)
 
 
-def apartment_svg(k, scene, path, title, skipped_layouts):
+def apartment_svg(k, scene, path, title, skipped_layouts, bath):
     import bpy
     W, H, T = k.APT_WIDTH, k.APT_HEIGHT, k.THICK_WALL
     pad, margin, title_h = 50, 25, 25
@@ -1292,7 +1295,7 @@ def apartment_svg(k, scene, path, title, skipped_layouts):
             svg.poly([P(x, y) for x, y in outline], fill, width=0.1)
 
     # Room measures: width along the top, depth along the left, name inside.
-    for name, x1, x0, y1, y0 in k.room_sizes():
+    for name, x1, x0, y1, y0 in k.room_sizes(bath):
         w, d = x1 - x0, y1 - y0
         off = min(18, 0.18 * min(w, d))
         svg.dim(*P(x0, y1 - off), *P(x1, y1 - off), fmt(w))

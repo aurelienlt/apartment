@@ -19,10 +19,12 @@ import bmesh  # must come after bpy when running as a module
 
 # --- Dimensions (cm) ---------------------------------------------------------
 
-KITCHEN_WIDTH = 300
-KITCHEN_DEPTH = 335               # length of the kitchen's left wall
+# Sizes from the architect's plan (plan-photos/56-06-24-17-plan-scanned.pdf,
+# page 2, in mm) where it gives them; the rest are our own measures.
+KITCHEN_WIDTH = 300               # plan: 2637 + 360
+KITCHEN_DEPTH = 338.1             # length of the kitchen's left wall (plan: 108 + 3273)
 
-WALL_HEIGHT = 250                 # the ceiling
+WALL_HEIGHT = 260                 # the ceiling
 OUT_WALL = 15                     # outside walls are thin, except...
 THICK_WALL = 25                   # ...the right wall, bedroom 1's left, bedroom 2's top
 RIGHT_THIN_WALL = 10              # thin stretch of the right wall
@@ -40,8 +42,8 @@ BATH_DOOR_ANGLE = 90              # except the bathroom's
 DENT_WIDTH = 30                   # top-right corner block
 DENT_HEIGHT = 70
 
-RECESS_FROM_TOP = 220             # right wall gets thinner here...
-RECESS_LENGTH = 250               # ...for this length
+RECESS_FROM_TOP = 207.1           # right wall gets thinner here (plan: 770 + 1301)...
+RECESS_LENGTH = 291.6             # ...for this length (plan: 2916)
 # There the thick right wall becomes a thin one centred in it, so the room
 # gains half the difference.
 RECESS_DEPTH = (THICK_WALL - RIGHT_THIN_WALL) / 2
@@ -54,23 +56,34 @@ RECESS_DEPTH = (THICK_WALL - RIGHT_THIN_WALL) / 2
 # between rooms, so the outer size grows by their thickness.
 
 TOP_BAND = KITCHEN_DEPTH
-MID_BAND = 120                    # hall between the two bedrooms
-BOTTOM_BAND = 325
-BATH_WIDTH = 140
+MID_BAND = 119.6                  # hall between the two bedrooms (plan: small balcony 1196)
+BOTTOM_BAND = 321.6               # plan: 212 + 3004
+BATH_WIDTH = 139.5                # plan: 1395
 TOILET_WIDTH, TOILET_HEIGHT = 155, 90
-BEDROOM2_WIDTH = 340
-BEDROOM1_SIZE = 325
-BALCONY_WIDTH, BALCONY_HEIGHT = 300, 100   # notch in the bottom-right corner
+# Bedroom 2 reaches 397 (plan: 3762 + 208) from the left wall to the niche's
+# wall, its wardrobe included: the room, a wall and the wardrobe (the rest of
+# the toilet column beside the niche).
+NICHE_WIDTH = 93.5                # bathtub niche (plan: 935)
+PILLAR_DEPTH = 57                 # duct above the niche (plan: 570)
+BEDROOM2_WIDTH = 397 - INT_WALL - (TOILET_WIDTH - NICHE_WIDTH - INT_WALL)
+BEDROOM2_THICK_TOP = 376.2        # bedroom 2's thick top wall stops here (plan: 3762)
+BEDROOM1_SIZE = 321.3             # plan: 3213
+SMALL_BALCONY_WIDTH = 220.9       # plan: 2209
+# Big balcony, a notch in the bottom-right corner: its top wall starts 704.6
+# from the top (plan: 770 + 1301 + 2916 + 2059) and it is 105.7 deep inside
+# (plan: 1057), reaching past the bottom wall.
+BALCONY_WIDTH = 300               # plan: 2997
+BALCONY_FROM_TOP = 704.6
+BALCONY_DEPTH = 105.7
 # Living space left of the balcony: 295 in the todo, but it takes whatever the
 # top band leaves (305) so the outside walls stay straight.
-THICK_WALL_LENGTH = 210           # under the closet, THICK_WALL thick
+THICK_WALL_LENGTH = 203.9         # under the closet, THICK_WALL thick (plan: 2039)
 CLOSET_HEIGHT, CLOSET_DEPTH = 80, 60       # bedroom 1 closet, at the top of its wall
-BATHTUB_LENGTH, BATHTUB_WIDTH = 180, 80
 BATHTUB_HEIGHT = 55               # assumed
 ROOM_DOOR_WIDTH = 80              # assumed: bedrooms, small balcony
 BATH_DOOR_WIDTH = 70              # assumed: bathroom, toilet
 WINDOW_WIDTH = 200
-WINDOW_SILL, WINDOW_TOP = 90, 220  # assumed
+WINDOW_SILL, WINDOW_TOP = 60, 220  # top assumed
 PARAPET_HEIGHT = 100              # small balcony's open side (assumed)
 SLIDING_WIDTH = 240               # living room to big balcony (assumed)
 SLIDING_HEIGHT = 220              # assumed
@@ -84,26 +97,54 @@ DESK_DEPTH = 40
 # cupboard along the rest of the right wall.
 GLASS_WALL_FROM_TOP = 100
 GLASS_WALL_LENGTH = 70
-GLASS_WALL_GAP = 100
+GLASS_WALL_GAP = 120
 GLASS_WALL_HEIGHT = 200           # assumed
 BATH_CUPBOARD_DEPTH = 50
 BATH_CUPBOARD_HEIGHT = 90         # assumed
-BATHROOM_LAYOUTS = ("a", "b")     # each its own collection, a shown
-TOILET_CORNER_CUT = 20            # bathroom b: the toilet room's corner cut by this
+BATHROOM_LAYOUTS = ("a", "b", "c")  # each its own collection, a shown
+TOILET_CORNER_CUT = 20            # the toilet room's corner: its square block's size
+BATH_C_CORNER_CUT = 50            # bathroom c: that corner cut by this much instead
+# Bathroom b: the toilet room's diagonal wall, its inner face from this high
+# up the room's right wall to where the room's top wall is this long.
+TOILET_DIAGONAL_FROM_BOTTOM = 70
+TOILET_TOP_WALL_LENGTH = 110.9
+TOILET_CORNER_TUB_GAIN = 10       # its top corner cut again, this much further from the tub
+TALL_TOILET_HEIGHT = 150          # bathrooms b and c: toilet room, instead of TOILET_HEIGHT,
+TALL_TOILET_FROM_RIGHT = 45       # its toilet against its bottom wall, centred this far
+                                  # from its right wall
 # Bathroom layout b (from bathroom2.svg, simplified).
-BATH_B_RAISE = 10                 # raised floor at the top of the bathroom...
-BATH_B_RAISED_DEPTH = 190         # ...over this much from the top wall
-BATH_B_TUB_CENTRE = (-400, -80)   # diagonal bathtub on the real floor
-BATH_B_TUB_LENGTH, BATH_B_TUB_WIDTH, BATH_B_TUB_ANGLE = 160, 70, 32
-BATH_B_SHOWER_FROM_WALL = 23      # round shower, cut by the kitchen wall:
-BATH_B_SHOWER_Y = -180            # centre 23 from the wall...
-BATH_B_SHOWER_RADIUS = 73         # ...and its radius
-BATH_B_SHELVES_DEPTH, BATH_B_SHELVES_LENGTH = 40, 70
-BATH_B_SHELVES_HEIGHT = 200       # from the apartment floor
+# Bathroom layout c: the bathtub at the top along the kitchen wall, the shower
+# in the niche behind glass, the toilet room taller with a sink and a closet.
+BATH_C_TUB_LENGTH, BATH_C_TUB_WIDTH = 180, 80
+BATH_C_SHOWER_OPENING = 40        # shower glass stops this far from the niche's bottom
+BATH_C_SINK_WIDTH, BATH_C_SINK_DEPTH = 80, 50      # along the toilet room's top wall...
+BATH_C_CLOSET_DEPTH = 30          # ...then a closet over the rest of it
+TOILET_CLOSET_HEIGHT = 200        # bathrooms b and c (assumed)
+BATH_B_RAISE = 12                 # raised floor at the top of the bathroom
+# Diagonal bathtub on the real floor, its ends fully round, BATH_B_TUB_GAP from
+# the top wall, the kitchen wall and the pillar's corner; the top corners of
+# the room are filled in parallel to it, the left one BATH_B_CORNER_GAP away.
+BATH_B_TUB_LENGTH, BATH_B_TUB_WIDTH = 170, 80
+BATH_B_TUB_GAP = 10
+BATH_B_CORNER_GAP = 20
+BATH_B_GLASS_EXTRA = 20           # the shower glass goes on this far onto the raised floor
+BATH_B_SHOWER_FROM_WALL = 23      # round shower, cut by the kitchen wall: centre 23
+BATH_B_SHOWER_TUB_GAP = 20        # from the wall, low enough to leave this much raised
+                                  # floor along the tub, as big as fits above the sink
+                                  # cupboard (1 clear)
+BATH_B_TUB_STEP = 20              # the block around the tub has a step, this wide and
+                                  # this much above the strip, along that strip
+BATH_B_SINK_WIDTH, BATH_B_SINK_DEPTH = 75, 50      # toilet room's top wall, from the left...
+BATH_B_CLOSET_DEPTH = 30          # ...then a closet into the diagonal wall's corner
 BATH_B_CUPBOARD_DEPTH, BATH_B_CUPBOARD_LENGTH = 50, 75
 BATH_B_SCREEN_BLACK = 120         # glass beside the tub block: black up to here
+BATH_B_SCREEN_EXTRA = 20          # it goes on this far below the tub's left end
 BATH_B_RAISED_FLOOR_COLOR = "#d9d9d9"
 BATH_B_TUB_BLOCK_COLOR = "#bfbfbf"
+SHOWER_ARM = 30                   # shower heads' centre from their wall (assumed)
+BATH_A_RAISE = 10                 # bathroom a: raised floor over its top part
+TUB_RIM, TAP_RIM = 10, 20         # bathrooms a and c: tub rim, wider at the tap end (assumed)
+SINK_WIDTH = 40                   # every bathroom sink, centred on its cupboard
 FRONT_COLOR = "#e3d3b0"           # cupboard doors: the kitchen's default beige
 DESK_HEIGHT = 75                  # assumed
 COFFEE_TABLE_LENGTH, COFFEE_TABLE_WIDTH = 100, 60
@@ -114,7 +155,7 @@ COFFEE_TABLE_GAP = 40             # from the sofa front (assumed)
 # the far end a half circle; its axis 100 cm from the open space's right edge.
 DINING_LENGTH, DINING_WIDTH = 190, 90
 DINING_WALL_GAP = 10              # between the flat end and the bottom wall (layout 1)
-LAYOUTS = (1, 2, 3, 4, 5, 6, 7)   # furniture layouts, each its own collection
+LAYOUTS = (1, 2, 3, 4, 5, 6, 7, 8)  # furniture layouts, each its own collection
 CLOSET_LAYOUTS = (1, 2, 3, 4, 5)  # layouts keeping bedroom 1's closet and the library
 CORNER_DESK_SIDE = 100            # layout 6: corner desk along the bedroom wall (assumed)
 BOTTOM_DESK_LENGTH = 160          # layout 2: desk along the bottom wall
@@ -138,6 +179,9 @@ PIANO_WIDTH, PIANO_DEPTH = 150, 55
 PIANO_HEIGHT = 125                # assumed
 PIANO_FROM_BATHROOM = 100         # back of the case to the bathroom's bottom wall
 PIANO_FROM_RIGHT = 240            # right side to the right wall
+PIANO_STOOL_LENGTH, PIANO_STOOL_WIDTH = 56, 34   # black, in front of the keyboard
+PIANO_STOOL_HEIGHT = 53
+PIANO_STOOL_GAP = 7               # from the front of the piano
 
 # Beds: head against a wall, long side 40 cm from the window's wall.
 BED_LENGTH, BED_WIDTH = 200, 160
@@ -145,6 +189,7 @@ BED_FROM_WINDOW = 40
 
 APT_WIDTH = KITCHEN_WIDTH + BATH_WIDTH + TOILET_WIDTH + BEDROOM2_WIDTH + 3 * INT_WALL
 APT_HEIGHT = TOP_BAND + MID_BAND + BOTTOM_BAND + 2 * INT_WALL
+BALCONY_HEIGHT = APT_HEIGHT - BALCONY_FROM_TOP   # notch height, from the bottom wall
 
 BOARD = 2                         # wood thickness
 FRONT_GAP = 0.15                  # half the gap between adjacent fronts
@@ -499,8 +544,8 @@ def room_layout():
     hall = (top - i, top - i - MID_BAND)
     bottom = (hall[1] - i, -APT_HEIGHT)
     toilet_y = (top + TOILET_HEIGHT, top)
-    tub_y = (toilet_y[0] + i + BATHTUB_LENGTH, toilet_y[0] + i)
-    tub_x = (bath[1] - i, bath[1] - i - BATHTUB_WIDTH)
+    tub_y = (-PILLAR_DEPTH, toilet_y[0] + i)              # the niche
+    tub_x = (bath[1] - i, bath[1] - i - NICHE_WIDTH)
     # Bedroom 1 measured from the inner face of its thick left wall.
     bed1 = (-APT_WIDTH + (THICK_WALL - OUT_WALL) + BEDROOM1_SIZE, -APT_WIDTH)
     thick = (bed1[0] + THICK_WALL, bed1[0])
@@ -508,10 +553,10 @@ def room_layout():
     thick_y = (-APT_HEIGHT + THICK_WALL_LENGTH, -APT_HEIGHT)
     closet = (bed1[0] + CLOSET_DEPTH, bed1[0])
     closet_y = (bottom[0], bottom[0] - CLOSET_HEIGHT)   # from the hall wall down
-    # Bedroom doors at the right of their walls; the hall ends just past both.
+    # Bedroom doors at the right of their walls; the hall ends at the small balcony.
     bed2_door = (bed2[0] - 10 - ROOM_DOOR_WIDTH, bed2[0] - 10)
     bed1_door = (bed1[0] - 5 - ROOM_DOOR_WIDTH, bed1[0] - 5)
-    hall_end = min(bed2_door[0], bed1_door[0]) - 10
+    hall_end = -APT_WIDTH + SMALL_BALCONY_WIDTH + i
     return dict(kitchen=k, bath=bath, toilet=toilet, bed2=bed2, top=top, hall=hall,
                 bottom=bottom, toilet_y=toilet_y, tub_x=tub_x, tub_y=tub_y, bed1=bed1,
                 thick=thick, thick_y=thick_y, closet=closet, closet_y=closet_y, open_space=open_space,
@@ -535,11 +580,12 @@ def build_walls(mats, col):
     bed1_window = (bed1_xc - WINDOW_WIDTH / 2, bed1_xc + WINDOW_WIDTH / 2)
     open_xc = sum(r["open_space"]) / 2
     open_window = (open_xc - WINDOW_WIDTH / 2, open_xc + WINDOW_WIDTH / 2)
-    hall_bottom, bed2_right = r["hall"][1], r["bed2"][0]
+    hall_bottom = r["hall"][1]
     left = (-W - t, -W, hall_bottom, -inset)
     bottom = (-W - t, -BALCONY_WIDTH, -H - t, -H)
-    wall("Wall Top Bedroom 2", -W - t, bed2_right, -inset, t, w, col)  # thick
-    wall("Wall Top", bed2_right, T, 0, t, w, col, [(door_x0, door_x1, 0, DOOR_HEIGHT)])
+    thick_top = -W + BEDROOM2_THICK_TOP
+    wall("Wall Top Bedroom 2", -W - t, thick_top, -inset, t, w, col)  # thick
+    wall("Wall Top", thick_top, T, 0, t, w, col, [(door_x0, door_x1, 0, DOOR_HEIGHT)])
     wall("Wall Left", *left, w, col, [(*bed2_window, WINDOW_SILL, WINDOW_TOP),
                                       (*r["hall"], PARAPET_HEIGHT, h)])
     wall("Wall Left Bedroom 1", -W - t, -W + inset, -H, hall_bottom, w, col)  # thick
@@ -548,7 +594,9 @@ def build_walls(mats, col):
     window("Window Bedroom 2", left, *bed2_window, WINDOW_SILL, WINDOW_TOP, mats, col)
     window("Window Bedroom 1", bottom, *bed1_window, WINDOW_SILL, WINDOW_TOP, mats, col)
     window("Window Living", bottom, *open_window, WINDOW_SILL, WINDOW_TOP, mats, col)
-    wall("Wall Balcony Side", -BALCONY_WIDTH, -BALCONY_WIDTH + t, -H - t, balcony_y - t, w, col)
+    balcony_bottom = balcony_y - t - BALCONY_DEPTH
+    wall("Wall Balcony Side", -BALCONY_WIDTH, -BALCONY_WIDTH + t, balcony_bottom, balcony_y - t,
+         w, col)
     # Big balcony: sliding window from the living room, tiled floor, glass
     # railing on its two open sides.
     balcony_wall = (-BALCONY_WIDTH, T, balcony_y - t, balcony_y)
@@ -557,9 +605,9 @@ def build_walls(mats, col):
     wall("Wall Balcony Top", *balcony_wall, w, col, [(*sliding, 0, SLIDING_HEIGHT)])
     sliding_window("Balcony Window", balcony_wall, *sliding, SLIDING_HEIGHT, mats, col)
     bx0, by1 = -BALCONY_WIDTH + t, balcony_y - t
-    box("Balcony Floor", bx0, T, -H - t, by1, -2, 0, mats["tiles"], col)
-    for label, bounds in (("Bottom", (bx0, T, -H - t, -H - t + 1)),
-                          ("Right", (T - 1, T, -H - t + 1, by1))):
+    box("Balcony Floor", bx0, T, balcony_bottom, by1, -2, 0, mats["tiles"], col)
+    for label, bounds in (("Bottom", (bx0, T, balcony_bottom, balcony_bottom + 1)),
+                          ("Right", (T - 1, T, balcony_bottom + 1, by1))):
         x0, x1, y0, y1 = bounds
         box(f"Balcony Railing {label} Glass", x0, x1, y0, y1, 0, RAILING_HEIGHT - 4,
             mats["clear_glass"], col)
@@ -589,15 +637,8 @@ def build_walls(mats, col):
               angle=BATH_DOOR_ANGLE)
     room_door("Door Toilet", hall_top, *toilet_door, mats, col, hinge="a0", swing=1)
     room_door("Door Bedroom 2", hall_top, *bed2_door, mats, col, hinge="a1", swing=1)
-    # Toilet at the bottom of its column; above it the bathtub niche (open to
-    # the bathroom) under a pillar, and bedroom 2's wardrobe.
-    # The toilet room's corner jutting into the bathroom is left out here: each
-    # bathroom layout builds it (square, or cut), see toilet_corner.
-    c = TOILET_CORNER_CUT + i
-    wall("Wall Bath Toilet", bath[1] - i, bath[1], top, toilet_y[0] - TOILET_CORNER_CUT, w, col)
-    wall("Wall Toilet Top", bed2[0], bath[1] - c, toilet_y[0], toilet_y[0] + i, w, col)
-    wall("Wall Toilet Left", bed2[0], toilet[1], top, toilet_y[0] + i, w, col)
-    wall("Wall Bathtub Wardrobe", tub_x[1] - i, tub_x[1], tub_y[1], 0, w, col)
+    # Pillar over the bathtub niche. The toilet room below the niche, whose
+    # height depends on the bathroom layout, is built with it: toilet_room.
     box("Pillar", tub_x[1], bath[1], tub_y[0], 0, 0, h, w, col)
 
     # --- Bottom band: living room | open space | thick wall + closet | bedroom 1.
@@ -606,7 +647,8 @@ def build_walls(mats, col):
     # (The closet above the thick wall is built with its variants, see
     # build_closet_variants.)
     bed1_door = r["bed1_door"]
-    bed1_top = (-W + THICK_WALL - OUT_WALL, thick[0], r["bottom"][0], hall[1])
+    # Up to bedroom 1's thin right wall (no closet); the closet continues it.
+    bed1_top = (-W + THICK_WALL - OUT_WALL, thick[1] + i, r["bottom"][0], hall[1])
     wall("Wall Bedroom 1 Top", *bed1_top, w, col, [(*bed1_door, 0, DOOR_HEIGHT)])
     room_door("Door Bedroom 1", bed1_top, *bed1_door, mats, col, hinge="a1", swing=-1)
 
@@ -634,10 +676,11 @@ def text(name, body, x, y, z, size, material, col, rot_z=0.0):
     return obj
 
 
-def room_sizes():
+def room_sizes(bath="a"):
     """(name, x_right, x_left, y_top, y_bottom) of each room's main rectangle,
-    in plan cm, ignoring closets, niches and small corners."""
-    r = room_layout()
+    in plan cm, ignoring closets, niches and small corners, with bathroom
+    layout `bath`."""
+    r = bathroom_rooms(room_layout(), bath)
     inset = THICK_WALL - OUT_WALL
     balcony_y = -(APT_HEIGHT - BALCONY_HEIGHT)
     return [
@@ -651,7 +694,7 @@ def room_sizes():
         ("Bedroom 1", r["bed1"][0], r["bed1"][1] + inset, *r["bottom"]),
         ("Open Space", -BALCONY_WIDTH, r["thick"][0], r["hall"][1], -APT_HEIGHT),
         ("Balcony", THICK_WALL, -BALCONY_WIDTH + OUT_WALL, balcony_y - OUT_WALL,
-         -APT_HEIGHT - OUT_WALL),
+         balcony_y - OUT_WALL - BALCONY_DEPTH),
     ]
 
 
@@ -759,7 +802,7 @@ def build_bookshelves(mats, col, r):
 
 def piano(name, x, y, rot_z, mats, col):
     """Upright piano in its own frame: the back of the case at local Y = 0 from
-    X = 0 to PIANO_WIDTH, the keyboard towards +Y."""
+    X = 0 to PIANO_WIDTH, the keyboard towards +Y, and its stool in front."""
     pivot = empty(name, col, (x, y, 0), rot_z=rot_z)
     w, d, lq = PIANO_WIDTH, PIANO_DEPTH, mats["lacquer"]
     box(f"{name} Case", 0, w, 0, 35, 0, PIANO_HEIGHT, lq, col, pivot)
@@ -768,6 +811,14 @@ def piano(name, x, y, rot_z, mats, col):
     box(f"{name} Keybed", 4, w - 4, 35, d, 62, 70, lq, col, pivot)
     box(f"{name} Keys", 10, w - 10, d - 15, d - 1, 70, 72, mats["ceramic"], col, pivot)
     box(f"{name} Fallboard", 4, w - 4, 35, 40, 72, 85, lq, col, pivot)
+
+    # Stool: a 5 thick seat on four 4 x 4 legs, centred on the keyboard.
+    sx0, sx1 = (w - PIANO_STOOL_LENGTH) / 2, (w + PIANO_STOOL_LENGTH) / 2
+    sy0 = d + PIANO_STOOL_GAP
+    sy1, sh, black = sy0 + PIANO_STOOL_WIDTH, PIANO_STOOL_HEIGHT, mats["black"]
+    box(f"{name} Stool Seat", sx0, sx1, sy0, sy1, sh - 5, sh, black, col, pivot)
+    for k, (lx, ly) in enumerate(((sx0, sy0), (sx1 - 4, sy0), (sx0, sy1 - 4), (sx1 - 4, sy1 - 4))):
+        box(f"{name} Stool Leg {k + 1}", lx, lx + 4, ly, ly + 4, 0, sh - 5, black, col, pivot)
 
 def toilet(name, x, y, rot_z, mats, col, z=0):
     """Floor-standing toilet, back against the wall at local Y = 0, facing +Y,
@@ -800,15 +851,67 @@ def cupboard(name, width, depth, height, doors, mats, col, pivot):
             plinth + g, height - g, mats["front"], col, pivot)
 
 
-def toilet_corner(name, mats, col, r, cut_corner):
+def toilet_room_diagonal(r):
+    """The toilet room's diagonal wall (toilet_room, bathroom b): its inner face
+    from TOILET_DIAGONAL_FROM_BOTTOM up the room's right wall towards the end
+    of a TOILET_TOP_WALL_LENGTH top wall, its outer face INT_WALL away, square
+    to it; the corner with the top wall cut again, square to the way to the
+    bathtub, TOILET_CORNER_TUB_GAIN further from it. Returns the plan outline,
+    the outer and inner faces (from the right wall up to the top wall), the
+    right wall's top and the top wall's end."""
+    i, x = INT_WALL, r["bath"][1]
+    yb = r["top"] + TOILET_DIAGONAL_FROM_BOTTOM           # right wall's top
+    yt = r["toilet_y"][0]                                 # top wall's inner face
+    xt = r["toilet"][1] + TOILET_TOP_WALL_LENGTH
+    dx, dy = xt - (x - i), yt - yb
+    n = math.hypot(dx, dy)
+    nx, ny = dy / n * i, -dx / n * i                      # to the outer face
+    yo = yb + ny + (x - (x - i + nx)) / dx * dy           # outer face on the right wall
+    corner = (x - i + nx + (yt + i - (yb + ny)) / dy * dx, yt + i)   # ... at the top wall
+
+    # The second cut: square to the way from that corner to the tub's axis.
+    tub = bath_b_tub(r)
+    (ax, ay), (bx, by) = tub["ends"]
+    t = max(0, min(1, ((corner[0] - bx) * (ax - bx) + (corner[1] - by) * (ay - by))
+                   / ((ax - bx) ** 2 + (ay - by) ** 2)))
+    px, py = bx + t * (ax - bx), by + t * (ay - by)
+    m = math.hypot(px - corner[0], py - corner[1])
+    hx, hy = (px - corner[0]) / m, (py - corner[1]) / m
+
+    def on_cut(start, sdx, sdy, offset):
+        # Point start + k (sdx, sdy) on the line (P - corner) . h = -offset.
+        k = (-offset - ((start[0] - corner[0]) * hx + (start[1] - corner[1]) * hy)) \
+            / (sdx * hx + sdy * hy)
+        return (start[0] + k * sdx, start[1] + k * sdy)
+
+    g = TOILET_CORNER_TUB_GAIN
+    outer = [(x, yo), on_cut((x, yo), dx, dy, g), on_cut((0, yt + i), 1, 0, g)]
+    inner = [(x - i, yb), on_cut((x - i, yb), dx, dy, g + i), on_cut((0, yt), 1, 0, g + i)]
+    end = inner[2][0]
+    outline = [(x, yb)] + outer + [(end, yt + i)] + inner[::-1]
+    return dict(outline=outline, outer=outer, inner=inner, wall_top=yb, top_end=end)
+
+
+def toilet_room_diagonal_x(diag, y):
+    """X of the diagonal wall's inner face at y (diag from toilet_room_diagonal)."""
+    pts = diag["inner"]
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        if y <= y1 or (x1, y1) == pts[-1]:
+            return x0 + (y - y0) / (y1 - y0) * (x1 - x0)
+
+
+def toilet_corner(name, mats, col, r, cut=0):
     """The toilet room's corner jutting into the bathroom (its top wall meeting
-    the wall shared with the bathroom), square or with a TOILET_CORNER_CUT
-    right triangle cut off, outside and inside alike."""
-    i, k = INT_WALL, TOILET_CORNER_CUT
+    the wall shared with the bathroom), k + INT_WALL along each wall (k: `cut`,
+    or TOILET_CORNER_CUT): square, or with a `cut` right triangle cut off
+    outside, the diagonal INT_WALL thick square to itself (see
+    toilet_corner_inner)."""
+    i, k = INT_WALL, cut or TOILET_CORNER_CUT
     x, y = r["bath"][1], r["toilet_y"][0] + i       # outer corner
-    if cut_corner:
+    if cut:
+        (xt, yt), (xr, yr) = toilet_corner_inner(r, cut)
         pts = [(x - k - i, y), (x - k, y), (x, y - k), (x, y - k - i),
-               (x - i, y - k - i), (x - k - i, y - i)]
+               (x - i, y - k - i), (xr, yr), (xt, yt), (x - k - i, y - i)]
     else:
         pts = [(x - k - i, y), (x, y), (x, y - k - i), (x - i, y - k - i),
                (x - i, y - i), (x - k - i, y - i)]
@@ -816,14 +919,20 @@ def toilet_corner(name, mats, col, r, cut_corner):
 
 
 def bathroom_a(mats, col, r):
-    """Bathroom layout a: bathtub in the niche, two glass walls with a toilet
-    between them, a cupboard along the rest of the right wall."""
+    """Bathroom layout a: bathtub with a tap in the niche, a shower in the top
+    right corner, two glass walls with a toilet between them, the floor raised
+    over that top part; a cupboard with a sink along the rest of the right
+    wall."""
     bath_right = r["bath"][0]               # face of the wall shared with the kitchen
-    toilet_corner("Wall Toilet Corner", mats, col, r, cut_corner=False)
+    toilet_room(mats, col, r)
+    toilet("Toilet", r["toilet"][0], sum(r["toilet_y"]) / 2, 90, mats, col)
     (tx1, tx0), (ty1, ty0) = r["tub_x"], r["tub_y"]
+    # Bathtub filling the niche, its rim wider at the bottom end for the tap.
+    m, mt = TUB_RIM, TAP_RIM
     tub = box("Bathtub", tx0, tx1, ty0, ty1, 0, BATHTUB_HEIGHT, mats["ceramic"], col)
-    cut(tub, box("Bathtub Cutter", tx0 + 6, tx1 - 6, ty0 + 6, ty1 - 6, 12,
+    cut(tub, box("Bathtub Cutter", tx0 + m, tx1 - m, ty0 + mt, ty1 - m, 12,
                  BATHTUB_HEIGHT + 5, mats["ceramic"], col))
+    tap("Bathtub Tap", (tx0 + tx1) / 2, ty0 + mt, BATHTUB_HEIGHT, 180, mats, col)
 
     x1, x0 = bath_right, bath_right - GLASS_WALL_LENGTH
     y_a = -GLASS_WALL_FROM_TOP
@@ -840,14 +949,24 @@ def bathroom_a(mats, col, r):
         GLASS_WALL_HEIGHT, mats["clear_glass"], col)
     box("Bathtub Glass Screen Edge", tub_edge - 1.5, tub_edge + 0.5, y_a - 1, y_a,
         BATHTUB_HEIGHT, GLASS_WALL_HEIGHT, mats["metal"], col)
+    # Raised floor over the top of the bathroom: its step from the toilet
+    # room's corner to the lower glass wall's end, then along that wall.
+    yc = r["toilet_y"][0] + INT_WALL                     # toilet room's outer top face
+    bx, pillar_y = r["bath"][1], r["tub_y"][0]
+    raised = principled("Bathroom Raised Floor", hex_color(BATH_B_RAISED_FLOOR_COLOR), 0.6)[0]
+    prism("Bathroom Platform", [(tub_edge, pillar_y), (bx, pillar_y), (bx, 0), (x1, 0),
+                                (x1, y_b), (x0, y_b), (bx, yc), (tub_edge, yc)],
+          0, BATH_A_RAISE, raised, col)
     # Back against the upper glass wall, facing the bottom of the plan.
-    toilet("Bathroom Toilet", (x0 + x1) / 2, y_a, 180, mats, col)
+    toilet("Bathroom Toilet", (x0 + x1) / 2, y_a, 180, mats, col, z=BATH_A_RAISE)
+    # Shower above the upper glass wall, its head on the kitchen wall.
+    shower_head("Shower", bath_right, y_a / 2, 0, SHOWER_ARM, mats, col)
 
-    # Cupboard from the second glass wall down to the bottom wall.
+    # Cupboard with a sink from the second glass wall down to the bottom wall.
     length = y_b - r["top"]
     pivot = empty("Bathroom Cupboard", col, (bath_right, r["top"], 0), rot_z=90)
-    cupboard("Bathroom Cupboard", length, BATH_CUPBOARD_DEPTH, BATH_CUPBOARD_HEIGHT, 3,
-             mats, col, pivot)
+    sink_cupboard("Bathroom Cupboard", length, BATH_CUPBOARD_DEPTH, mats, col, pivot,
+                  height=BATH_CUPBOARD_HEIGHT, doors=3)
 
 
 def closet_doors(name, x, y_top, y_bottom, mats, col):
@@ -862,14 +981,100 @@ def closet_doors(name, x, y_top, y_bottom, mats, col):
             WALL_HEIGHT - 0.5, mats["wood"], col)
 
 
-def build_closet_doors(mats, col, r):
+def bathroom_rooms(r, bath):
+    """room_layout() for bathroom layout `bath`: layouts b and c have a taller
+    toilet room, so a shorter niche above it."""
+    if bath == "a":
+        return r
+    toilet_y = (r["top"] + TALL_TOILET_HEIGHT, r["top"])
+    return dict(r, toilet_y=toilet_y, tub_y=(r["tub_y"][0], toilet_y[0] + INT_WALL))
+
+
+def toilet_corner_inner(r, cut):
+    """Ends of the inner face of toilet_corner's diagonal: on the top wall's
+    inner face, then on the right wall's inner face."""
+    i = INT_WALL
+    x, y = r["bath"][1], r["toilet_y"][0] + i       # outer corner
+    c_in = x + y - cut - i * math.sqrt(2)           # inner face: X + Y = c_in
+    return (c_in - (y - i), y - i), (x - i, c_in - (x - i))
+
+
+def toilet_corner_cutter(name, mats, col, r, cut):
+    """Prism over the toilet room's inside corner beyond the cut of
+    toilet_corner, to cut furniture standing there."""
+    e = 5
+    (xt, yt), (xr, yr) = toilet_corner_inner(r, cut)
+    pts = [(xt - e, yt + e), (xr + e, yt + e), (xr + e, yr - e)]
+    return prism(name, pts, -1, WALL_HEIGHT + 1, mats["wall"], col)
+
+
+def toilet_room(mats, col, r, diagonal=False, corner_cut=0):
+    """The toilet room at the bottom of the toilet column, with the bathtub
+    niche (open to the bathroom) above it and bedroom 2's wardrobe beside the
+    niche: their walls, the toilet room's corner jutting into the bathroom
+    (square, or cut by corner_cut, see toilet_corner) and the wardrobe doors.
+    `diagonal`: a long diagonal wall instead, see toilet_room_diagonal."""
+    w, i = mats["wall"], INT_WALL
+    bath, toilet, bed2 = r["bath"], r["toilet"], r["bed2"]
+    top, toilet_y, tub_x, tub_y = r["top"], r["toilet_y"], r["tub_x"], r["tub_y"]
+    wall("Wall Toilet Left", bed2[0], toilet[1], top, toilet_y[0] + i, w, col)
+    wall("Wall Bathtub Wardrobe", tub_x[1] - i, tub_x[1], tub_y[1], 0, w, col)
+    if diagonal:
+        diag = toilet_room_diagonal(r)
+        wall("Wall Bath Toilet", bath[1] - i, bath[1], top, diag["wall_top"], w, col)
+        wall("Wall Toilet Top", bed2[0], diag["top_end"], toilet_y[0], toilet_y[0] + i, w, col)
+        prism("Wall Toilet Diagonal", diag["outline"], 0, WALL_HEIGHT, w, col)
+    else:
+        k = corner_cut or TOILET_CORNER_CUT
+        wall("Wall Bath Toilet", bath[1] - i, bath[1], top, toilet_y[0] - k, w, col)
+        wall("Wall Toilet Top", bed2[0], bath[1] - k - i, toilet_y[0], toilet_y[0] + i, w, col)
+        toilet_corner("Wall Toilet Corner", mats, col, r, corner_cut)
     # Bedroom 2's wardrobe, between the bathtub niche wall and bedroom 2.
-    closet_doors("Bedroom 2 Wardrobe", r["toilet"][1], 0, r["tub_y"][1], mats, col)
+    closet_doors("Bedroom 2 Wardrobe", toilet[1], 0, tub_y[1], mats, col)
+
+
+def tap(name, x, y, z, rot_z, mats, col, parent=None):
+    """Rough tap standing on a rim at height z: its body 3 to 7 behind (x, y)
+    along local +Y, the spout reaching 10 over the tub or sink along -Y; in
+    the parent's frame if given."""
+    pivot = empty(name, col, (x, y, z), rot_z=rot_z, parent=parent)
+    metal = mats["metal"]
+    box(f"{name} Body", -2, 2, 3, 7, 0, 22, metal, col, pivot)
+    box(f"{name} Spout", -1.5, 1.5, -10, 7, 18, 22, metal, col, pivot)
+    box(f"{name} Handle", -5, 5, 4, 6, 24, 26, metal, col, pivot)
+
+
+def shower_head(name, x, y, rot_z, arm, mats, col):
+    """Rough shower head on the wall through (x, y), facing local -X once
+    turned rot_z (0: the kitchen wall): a pipe up the wall, an arm `arm`
+    long, a 24 wide head at its end."""
+    pivot = empty(name, col, (x, y, 0), rot_z=rot_z)
+    metal = mats["metal"]
+    box(f"{name} Pipe", -3, 0, -1.5, 1.5, 100, 212, metal, col, pivot)
+    box(f"{name} Arm", -arm, -3, -1, 1, 210, 212, metal, col, pivot)
+    cylinder(f"{name} Head", -arm, 0, 206, 210, 12, metal, col, pivot)
+
+
+def sink_cupboard(name, width, depth, mats, col, pivot, sink_width=SINK_WIDTH, height=85,
+                  doors=2):
+    """Cupboard with a ceramic sink of sink_width centred on top, a tap behind
+    it and a mirror on the wall above it; in the pivot's frame as cupboard()."""
+    cupboard(name, width, depth, height, doors, mats, col, pivot)
+    c, h, sw = mats["ceramic"], height, sink_width
+    x0, x1 = (width - sw) / 2, (width + sw) / 2
+    sink = box(f"{name} Sink", x0, x1, 5, depth - 5, h, h + 5, c, col, pivot)
+    cut(sink, box(f"{name} Sink Cutter", x0 + 5, x1 - 5, 10, depth - 10, h + 1, h + 10, c, col,
+                  pivot))
+    # Tap on the sink's rim against the wall, its spout over the bowl.
+    tap(f"{name} Tap", width / 2, 8, h + 5, 180, mats, col, parent=pivot)
+    mw = min(width - 10, sw + 20)
+    box(f"{name} Mirror", (width - mw) / 2, (width + mw) / 2, 0, 1, 110, 190, mats["metal"],
+        col, pivot)
 
 
 def build_closet_variants(mats, r):
     """Bedroom 1's closet with the library around it (layouts in
-    CLOSET_LAYOUTS), or a straight bedroom wall instead (the other layouts):
+    CLOSET_LAYOUTS), or a thin wall above the thick one instead (the other layouts):
     two collections, the closet one shown."""
     w, i, h = mats["wall"], INT_WALL, WALL_HEIGHT
     thick, thick_y, closet, hall = r["thick"], r["thick_y"], r["closet"], r["hall"]
@@ -877,14 +1082,16 @@ def build_closet_variants(mats, r):
     col = collection("Bedroom 1 Closet")
     wall("Wall Closet Side", closet[0], closet[0] + i, cy1 - i, hall[1], w, col)
     wall("Wall Closet Bottom", thick[0], closet[0], cy1 - i, cy1, w, col)
-    wall("Wall Closet Top", thick[0], closet[0], cy0, hall[1], w, col)
+    wall("Wall Closet Top", thick[1] + i, closet[0], cy0, hall[1], w, col)
     # The bedroom wall between the thick wall and the closet.
     box("Wall Below Closet", thick[1], thick[0], thick_y[0], cy1, 0, h, w, col)
     closet_doors("Bedroom 1 Closet", r["bed1"][0], cy0, cy1, mats, col)
     build_bookshelves(mats, col, r)
 
+    # Without the closet, the wall above the thick one is thin, flush with
+    # the bedroom side, up to the corner with bedroom 1's top wall (plan: 1177).
     col = collection("No Closet")
-    box("Thick Wall Upper", thick[1], thick[0], thick_y[0], r["bottom"][0], 0, h, w, col)
+    box("Thin Wall Upper", thick[1], thick[1] + i, thick_y[0], r["bottom"][0], 0, h, w, col)
     bpy.context.view_layer.layer_collection.children[col.name].exclude = True
 
 
@@ -920,6 +1127,42 @@ def bottom_desk(name, mats, col, r):
     box(f"{name} Shelf Middle", xe, s1, y0, y0 + d, sh / 2 - 1, sh / 2 + 1, wood, col)
     box(f"{name} Shelf Bottom", xe, s1, y0, y0 + d, 0, 2, wood, col)
     box(f"{name} Shelf End", s1 - 2, s1, y0, y0 + d, 0, sh, wood, col)
+
+
+def wall_bookshelf(name, mats, col, r):
+    """Open light-wood bookshelf, BOOKSHELF_DEPTH deep, all along bedroom 1's
+    thin wall (no closet), from the thick wall up to the hall."""
+    x0 = r["thick"][1] + INT_WALL               # thin wall's open space face
+    x1 = x0 + BOOKSHELF_DEPTH
+    y0, y1 = r["thick_y"][0], r["hall"][1]
+    t, wood = BOARD, mats["wood"]
+    step = (BOOKSHELF_HEIGHT - t) / BOOKSHELF_SHELVES
+    for k in range(BOOKSHELF_SHELVES + 1):
+        z = k * step
+        box(f"{name} Board {k + 1}", x0, x1, y0 + t, y1 - t, z, z + t, wood, col)
+    box(f"{name} End A", x0, x1, y0, y0 + t, 0, BOOKSHELF_HEIGHT, wood, col)
+    box(f"{name} End B", x0, x1, y1 - t, y1, 0, BOOKSHELF_HEIGHT, wood, col)
+
+
+def shelf_and_corner_desk(name, mats, col, r):
+    """Along the open space's bottom wall: a low shelf from the bedroom 1 wall,
+    under the window sill, then a desk of BOTTOM_DESK_LENGTH in the right
+    corner, turning up along the balcony's side wall to its end."""
+    x0, y0, xr = r["thick"][0], -APT_HEIGHT, -BALCONY_WIDTH
+    d, h, t, wood = DESK_DEPTH, DESK_HEIGHT, 3, mats["wood"]
+    xe = xr - BOTTOM_DESK_LENGTH
+    sh = LOW_SHELF_HEIGHT
+    box(f"{name} Shelf Top", x0, xe, y0, y0 + d, sh - 2, sh, wood, col)
+    box(f"{name} Shelf Middle", x0, xe, y0, y0 + d, sh / 2 - 1, sh / 2 + 1, wood, col)
+    box(f"{name} Shelf Bottom", x0, xe, y0, y0 + d, 0, 2, wood, col)
+    box(f"{name} Shelf End", xe, xe + 2, y0, y0 + d, 0, sh, wood, col)
+    yt = -(APT_HEIGHT - BALCONY_HEIGHT)         # the balcony wall's end
+    box(f"{name} Top", xe, xr, y0, y0 + d, h - t, h, wood, col)
+    box(f"{name} Top Side", xr - d, xr, y0 + d, yt, h - t, h, wood, col)
+    box(f"{name} Leg A", xe, xe + t, y0, y0 + d, 0, h - t, wood, col)
+    box(f"{name} Leg Side", xr - d, xr, yt - t, yt, 0, h - t, wood, col)
+    box(f"{name} Back", xe + t, xr, y0, y0 + 2, h - 35, h - t, wood, col)
+    box(f"{name} Back Side", xr - 2, xr, y0 + d, yt - t, h - 35, h - t, wood, col)
 
 
 def bed(name, pivot_xy, rot_z, mats, col):
@@ -1018,6 +1261,22 @@ def build_layout(n, mats, col, r):
         piano(f"{p} Piano", -BALCONY_WIDTH, -APT_HEIGHT + DESK_DEPTH, 90, mats, col)
         corner_desk(f"{p} Desk", mats, col, r)
         return
+    if n == 8:
+        # Layout 7 with bookshelves all along bedroom 1's thin wall, the piano
+        # right below them, the sofa 20 further left, and along the bottom
+        # wall a low shelf on the left, a desk with a corner on the right.
+        dining(f"{p} Dining", -50 - DINING_WIDTH / 2, balcony_y + 40, 0, mats, col,
+               chair_side=-1)
+        wall_bookshelf(f"{p} Bookshelf", mats, col, r)
+        piano(f"{p} Piano", r["thick"][0], r["thick_y"][0], -90, mats, col)
+        shelf_and_corner_desk(f"{p} Desk", mats, col, r)
+        sy = r["hall"][0] - 100
+        x1 = -BALCONY_WIDTH + 20          # right end of the sofa
+        sofa(f"{p} Sofa", x1, sy, 180, mats, col)
+        xc = x1 - L / 2
+        y1 = sy - D - gap
+        coffee_table(f"{p} Coffee Table", xc - CL / 2, xc + CL / 2, y1 - CW, y1, mats, col)
+        return
     if n in (4, 5, 7):
         # As layout 2, but the dining table turned: 60 from the right wall (50 in
         # layout 5), its flat end towards the balcony 40 away, chairs on the room side.
@@ -1111,103 +1370,214 @@ def rotated_rounded_rect(cx, cy, length, width, radius, angle, steps=8):
     return [(cx + x * c - y * s, cy + x * s + y * c) for x, y in pts]
 
 
+def bath_b_tub(r):
+    """Bathroom b's bathtub: its axis' upper end BATH_B_TUB_GAP + radius from
+    the top and kitchen walls, turned so its upper long side is as far from
+    the pillar's corner (solving A sin + B cos = C). Returns its centre, unit
+    vectors along and across (up) it, half its straight length, its radius,
+    its angle (degrees) and its axis' ends."""
+    right, corner = r["bath"][0], (r["bath"][1], r["tub_y"][0])
+    half_l, rad = BATH_B_TUB_LENGTH / 2, BATH_B_TUB_WIDTH / 2
+    reach = BATH_B_TUB_GAP + rad
+    p1 = (right - reach, -reach)
+    qa, qb = p1[0] - corner[0], corner[1] - p1[1]
+    a = math.asin(reach / math.hypot(qa, qb)) - math.atan2(qb, qa)
+    u, v = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))
+    seg = half_l - rad
+    cx, cy = p1[0] - seg * u[0], p1[1] - seg * u[1]
+    return dict(cx=cx, cy=cy, u=u, v=v, seg=seg, rad=rad, angle=math.degrees(a),
+                ends=(p1, (cx - seg * u[0], cy - seg * u[1])))
+
+
 def bathroom_b(mats, col, r):
-    """Bathroom layout b: the top of the bathroom and niche raised 10, a
-    diagonal bathtub on the real floor before a block as high as the tub, the
-    toilet raised in the niche, shelves up to the ceiling on the left, a
-    round shower cut by the kitchen wall with curved glass, a cupboard with a
-    sink and a mirror under it."""
+    """Bathroom layout b (r from bathroom_rooms): the top of the bathroom and
+    niche raised, a diagonal bathtub on the real floor before a block as high
+    as the tub, with a tap; the toilet raised in the niche, a round shower
+    cut by the kitchen wall with curved glass and a shower head, a cupboard
+    with a sink and a mirror under it. The toilet room is taller, its corner a diagonal wall, with a
+    sink cupboard along its top wall."""
     right = r["bath"][0]                    # kitchen wall face
     left = r["tub_x"][1]                    # niche's left wall face
-    toilet_corner("Wall Toilet Corner", mats, col, r, cut_corner=True)
+    toilet_room(mats, col, r, diagonal=True)
+    diag = toilet_room_diagonal(r)
+    (tx1, tx0), ty1 = r["toilet"], r["toilet_y"][0]
+    toilet("Toilet", tx1 - TALL_TOILET_FROM_RIGHT, r["top"], 0, mats, col)
+    xs = tx0 + BATH_B_SINK_WIDTH
+    pivot = empty("Toilet Sink Cupboard", col, (xs, ty1, 0), rot_z=180)
+    sink_cupboard("Toilet Sink Cupboard", BATH_B_SINK_WIDTH, BATH_B_SINK_DEPTH, mats, col, pivot)
+    # Closet from the sink cupboard to the diagonal wall at its front, its back
+    # corner cut along the wall.
+    xc = toilet_room_diagonal_x(diag, ty1 - BATH_B_CLOSET_DEPTH)
+    pivot = empty("Toilet Closet", col, (xc, ty1, 0), rot_z=180)
+    cupboard("Toilet Closet", xc - xs, BATH_B_CLOSET_DEPTH, TOILET_CLOSET_HEIGHT, 1, mats, col,
+             pivot)
+    e, inner = 5, diag["inner"]
+    beyond = ([(inner[-1][0], ty1 + e)] + inner[::-1]
+              + [(inner[0][0], inner[0][1] - e), (tx1 + e, inner[0][1] - e), (tx1 + e, ty1 + e)])
+    for part in list(pivot.children):
+        cut(part, prism(f"{part.name} Cutter", beyond, -1, WALL_HEIGHT + 1, mats["wall"], col))
     pillar_y = r["tub_y"][0]                # pillar's lower face
-    raised_y = -BATH_B_RAISED_DEPTH
-    sx, sy, sr = right - BATH_B_SHOWER_FROM_WALL, BATH_B_SHOWER_Y, BATH_B_SHOWER_RADIUS
-    white, front, h = mats["cabinet"], mats["front"], BATHTUB_HEIGHT
+    corner = (r["bath"][1], pillar_y)       # pillar's corner in the bathroom
+    h, w = BATHTUB_HEIGHT, mats["wall"]
     # The raised parts in plain light greys, so their sides stand out.
     raised = principled("Bathroom Raised Floor", hex_color(BATH_B_RAISED_FLOOR_COLOR), 0.6)[0]
     block_mat = principled("Bathtub Block", hex_color(BATH_B_TUB_BLOCK_COLOR), 0.6)[0]
 
-    # Raised floor, with the shower's circle cut out.
-    platform = box("Bathroom Platform", left, right, raised_y, 0, 0, BATH_B_RAISE, raised, col)
+    tub = bath_b_tub(r)
+    cx, cy, u, v, seg, rad, angle = (tub[k] for k in ("cx", "cy", "u", "v", "seg", "rad",
+                                                       "angle"))
+    reach = BATH_B_TUB_GAP + rad
+    outline = rotated_rounded_rect(cx, cy, BATH_B_TUB_LENGTH, BATH_B_TUB_WIDTH, rad, angle)
+    tangent = (cx - seg * u[0] - rad, cy - seg * u[1])      # leftmost point of the tub
+
+    # The shower's centre: BATH_B_SHOWER_TUB_GAP + radius below the line of
+    # the tub's lower long side; its bottom 1 above the sink cupboard.
+    sx = right - BATH_B_SHOWER_FROM_WALL
+    lx, ly = cx - seg * u[0] - rad * v[0], cy - seg * u[1] - rad * v[1]
+    sy0 = ly - ((sx - lx) * v[0] + BATH_B_SHOWER_TUB_GAP) / v[1]   # centre for a zero radius
+    sr = (sy0 - (r["top"] + BATH_B_CUPBOARD_LENGTH + 1)) / (1 + 1 / v[1])
+    sy = sy0 - sr / v[1]
+
+    # Raised floor, with the shower's circle cut out. Its step goes from the
+    # diagonal wall's lower corner to the shower, meeting it where the
+    # shortest way between them does: a circle arc, horizontal at the shower.
+    bx, by = diag["outer"][0]
+    dx, dy = sx - bx, sy - by
+    k = 1 - sr / math.hypot(dx, dy)
+    step = (bx + k * dx, by + k * dy)
+    ex, ey = bx - step[0], by - step[1]
+    radius = -(ex ** 2 + ey ** 2) / (2 * ey)            # centre right below the shower end
+    centre = (step[0], step[1] - radius)
+    curve = arc(*centre, radius, 90, math.degrees(math.atan2(by - centre[1], bx - centre[0])),
+                steps=12)
+    floor = ([(left, 0), (right, 0), (right, sy), (sx, sy)] + curve
+             + diag["outer"][1:] + [(left, diag["outer"][-1][1])])
+    platform = prism("Bathroom Platform", floor, 0, BATH_B_RAISE, raised, col)
     cutter = cylinder("Bathroom Shower Cutter", sx, sy, -1, BATH_B_RAISE + 1, sr, raised, col)
     cut(platform, cutter)
 
-    # The bathtub, and the block behind it, as high as the tub: its left side
-    # vertical and touching the tub; its lower edge an arc around the shower's
+    # The top corners filled in with wall parallel to the tub: the right one
+    # square to its axis, BATH_B_TUB_GAP past its end; the left one along its
+    # upper side, BATH_B_CORNER_GAP away.
+    def fill(name, origin, normal, dist, x_wall):
+        # Wall corner (x_wall, 0) cut by the line (P - origin) . normal = dist.
+        ox, oy = origin
+        x_top = ox + (dist - (0 - oy) * normal[1]) / normal[0]
+        y_side = oy + (dist - (x_wall - ox) * normal[0]) / normal[1]
+        prism(name, [(x_top, 0), (x_wall, 0), (x_wall, y_side)], 0, WALL_HEIGHT, w, col)
+
+    fill("Wall Bathtub Corner Right", (cx, cy), u, seg + reach, right)
+    fill("Wall Bathtub Corner Left", (cx, cy), v, rad + BATH_B_CORNER_GAP, corner[0])
+
+    # The block behind the tub, as high as it: its left side vertical, touching
+    # the tub, up to the pillar; its lower edge an arc around the shower's
     # centre, touching the tub's lower long side, out to the kitchen wall; the
     # tub cut out of it.
-    (cx, cy), half_l, half_w, corner = BATH_B_TUB_CENTRE, BATH_B_TUB_LENGTH / 2, \
-        BATH_B_TUB_WIDTH / 2, 30
-    a = math.radians(BATH_B_TUB_ANGLE)
-    u, v = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))   # along, across
-    outline = rotated_rounded_rect(cx, cy, 2 * half_l, 2 * half_w, corner, BATH_B_TUB_ANGLE)
-    tangent = min(outline)                                   # leftmost point of the tub
-    # Lower long side: a point on it and the foot of the shower centre on it.
-    lx = cx - (half_l - corner) * u[0] - half_w * v[0]
-    ly = cy - (half_l - corner) * u[1] - half_w * v[1]
     t = (sx - lx) * u[0] + (sy - ly) * u[1]
     foot = (lx + t * u[0], ly + t * u[1])
     radius = math.hypot(foot[0] - sx, foot[1] - sy)
     a_foot = math.degrees(math.atan2(foot[1] - sy, foot[0] - sx))
     a_wall = math.degrees(math.acos((right - sx) / radius))   # upper meeting with the wall
-    edge = arc(sx, sy, radius, a_wall, a_foot)
-    block = prism("Bathtub Block", [(tangent[0], 0), (right, 0)] + edge + [tangent],
-                  0, h, block_mat, col)
-    cut(block, prism("Bathtub Block Cutter", outline, -1, h + 1, block_mat, col))
-    # Glass along the block's left side, black over its lower 120.
+    # The block stops BATH_B_TUB_STEP further out, where that circle meets
+    # the tub's lower side; the step fills the ring between.
+    r_out = radius + BATH_B_TUB_STEP
+    a_meet = a_foot - math.degrees(math.acos(radius / r_out))
+    edge = arc(sx, sy, r_out, math.degrees(math.acos((right - sx) / r_out)), a_meet)
     gx, gy = tangent
-    box("Bathtub Screen Black", gx - 1, gx, gy, 0, 0, BATH_B_SCREEN_BLACK, mats["black"], col)
-    box("Bathtub Screen Glass", gx - 1, gx, gy, 0, BATH_B_SCREEN_BLACK, GLASS_WALL_HEIGHT,
-        mats["clear_glass"], col)
+    top_y = pillar_y if gx < corner[0] else 0
+    gy_end = gy - BATH_B_SCREEN_EXTRA         # the screen's lower end
+    block = prism("Bathtub Block", [(gx, top_y), corner, (corner[0], 0), (right, 0)] + edge
+                  + [tangent], 0, h, block_mat, col)
+    cut(block, prism("Bathtub Block Cutter", outline, -1, h + 1, block_mat, col))
+    # The step, between the block and the raised strip around the shower.
+    prism("Bathtub Step", edge + arc(sx, sy, radius, a_foot, a_wall), 0,
+          BATH_B_RAISE + BATH_B_TUB_STEP, raised, col)
+    # Glass along the block's left side, going on BATH_B_SCREEN_EXTRA past the
+    # tub, black over its lower 120; the block fills in between it and the
+    # tub's rounded end there.
+    box("Bathtub Screen Black", gx - 1, gx, gy_end, top_y, 0, BATH_B_SCREEN_BLACK,
+        mats["black"], col)
+    box("Bathtub Screen Glass", gx - 1, gx, gy_end, top_y, BATH_B_SCREEN_BLACK,
+        GLASS_WALL_HEIGHT, mats["clear_glass"], col)
+    ex, ey = cx - seg * u[0], cy - seg * u[1]                 # centre of the tub's left end
+    a_end = 180 + math.degrees(math.asin((ey - gy_end) / rad))
+    prism("Bathtub Block End", [(gx, gy_end)] + arc(ex, ey, rad, a_end, 180)[:-1] + [(gx, gy)],
+          0, h, block_mat, col)
     tub = prism("Bathtub", outline, 0, h + 1, mats["ceramic"], col)
-    inner = rotated_rounded_rect(*BATH_B_TUB_CENTRE, BATH_B_TUB_LENGTH - 12,
-                                 BATH_B_TUB_WIDTH - 12, 24, BATH_B_TUB_ANGLE)
+    inner = rotated_rounded_rect(cx, cy, BATH_B_TUB_LENGTH - 12, BATH_B_TUB_WIDTH - 12,
+                                 rad - 6, angle)
     cut(tub, prism("Bathtub Cutter", inner, 12, h + 5, mats["ceramic"], col))
+    # Tap on the block, halfway along the tub's upper side, its spout over the tub.
+    tap("Bathtub Tap", cx + rad * v[0], cy + rad * v[1], h + 1, angle, mats, col)
 
-    # Toilet in the niche, under the pillar, facing down, on the raised floor.
-    toilet("Bathroom Toilet", left + 25, pillar_y, 180, mats, col, z=BATH_B_RAISE)
+    # Toilet in the niche, under the pillar, facing down, on the raised floor,
+    # centred between the niche's left wall and the screen beside the tub.
+    toilet("Bathroom Toilet", (left + gx - 1) / 2, pillar_y, 180, mats, col, z=BATH_B_RAISE)
 
-    # Shelves on the left, ending at the toilet room's wall, partly on the
-    # raised floor: doors from the sink cupboard's plinth height (20) up to
-    # BATH_B_SHELVES_HEIGHT; a plinth set back 5 under them.
-    y1 = r["toilet_y"][0] + INT_WALL
-    y0 = y1 + BATH_B_SHELVES_LENGTH
-    x1 = left + BATH_B_SHELVES_DEPTH
-    bottom, top = 20, BATH_B_SHELVES_HEIGHT
-    box("Bathroom Shelves Side A", left, x1, y1, y1 + BOARD, 0, top, white, col)
-    box("Bathroom Shelves Side B", left, x1, y0 - BOARD, y0, 0, top, white, col)
-    box("Bathroom Shelves Plinth", x1 - 5 - BOARD, x1 - 5, y1 + BOARD, y0 - BOARD, 0, bottom,
-        white, col)
-    for k in range(6):
-        z = bottom + k * (top - BOARD - bottom) / 5
-        box(f"Bathroom Shelves Board {k + 1}", left, x1, y1 + BOARD, y0 - BOARD, z, z + BOARD,
-            white, col)
-    step = (y0 - y1) / 2
-    for k in range(2):
-        d0 = y1 + k * step
-        box(f"Bathroom Shelves Door {k + 1}", x1, x1 + BOARD, d0 + FRONT_GAP, d0 + step - FRONT_GAP,
-            bottom + FRONT_GAP, top - FRONT_GAP, front, col)
-
-    # Curved glass on the shower's edge where it meets the floor that is not
-    # raised: from the raised floor's edge round to the kitchen wall.
-    a0 = math.degrees(math.atan2(raised_y - sy, -math.sqrt(sr ** 2 - (raised_y - sy) ** 2)))
+    # Curved glass on the shower's edge: from BATH_B_GLASS_EXTRA past the
+    # raised floor's edge round to the kitchen wall.
+    a0 = math.degrees(math.atan2(step[1] - sy, step[0] - sx) - BATH_B_GLASS_EXTRA / sr)
     a1 = -math.degrees(math.acos((right - sx) / sr))
     a0 %= 360
     a1 %= 360
     glass = arc(sx, sy, sr, a0, a1) + arc(sx, sy, sr - 1, a1, a0)
     prism("Bathroom Shower Glass", glass, 0, GLASS_WALL_HEIGHT, mats["clear_glass"], col)
+    # Shower head on the kitchen wall, at the end of its arm.
+    shower_head("Shower", right, sy, 0, SHOWER_ARM, mats, col)
 
     # Cupboard with a sink against the kitchen wall, under the shower, and a
     # mirror above it on the wall.
-    c0, c1 = r["top"], r["top"] + BATH_B_CUPBOARD_LENGTH
-    pivot = empty("Bathroom Sink Cupboard", col, (right, c0, 0), rot_z=90)
-    cupboard("Bathroom Sink Cupboard", c1 - c0, BATH_B_CUPBOARD_DEPTH, 85, 2, mats, col, pivot)
-    sink = box("Bathroom Sink", right - BATH_B_CUPBOARD_DEPTH + 5, right - 5, c0 + 8, c1 - 8,
-               85, 90, mats["ceramic"], col)
-    cut(sink, box("Bathroom Sink Cutter", right - BATH_B_CUPBOARD_DEPTH + 10, right - 10,
-                  c0 + 13, c1 - 13, 86, 95, mats["ceramic"], col))
-    box("Bathroom Mirror", right - 1, right, c0 + 5, c1 - 5, 110, 190, mats["metal"], col)
+    pivot = empty("Bathroom Sink Cupboard", col, (right, r["top"], 0), rot_z=90)
+    sink_cupboard("Bathroom Sink Cupboard", BATH_B_CUPBOARD_LENGTH, BATH_B_CUPBOARD_DEPTH,
+                  mats, col, pivot)
+
+
+def bathroom_c(mats, col, r):
+    """Bathroom layout c (r from bathroom_rooms): from layout a without the
+    bathroom's toilet; the bathtub with a tap at the top along the kitchen
+    wall, the cupboard below it; the shower in the niche behind a glass wall
+    open at the bottom, its head on the pillar, a sink on the cupboard. The
+    toilet room's corner is cut, its closet too. The toilet room is taller: the toilet
+    against its bottom wall, along its top wall a sink cupboard then a closet."""
+    right = r["bath"][0]                    # kitchen wall face
+    toilet_room(mats, col, r, corner_cut=BATH_C_CORNER_CUT)
+
+    # Bathtub, its rim wider at the bottom end for the tap.
+    x0, y0 = right - BATH_C_TUB_WIDTH, -BATH_C_TUB_LENGTH
+    m, mt = TUB_RIM, TAP_RIM
+    tub = box("Bathtub", x0, right, y0, 0, 0, BATHTUB_HEIGHT, mats["ceramic"], col)
+    cut(tub, box("Bathtub Cutter", x0 + m, right - m, y0 + mt, -m, 12, BATHTUB_HEIGHT + 5,
+                 mats["ceramic"], col))
+    tap("Bathtub Tap", (x0 + right) / 2, y0 + mt, BATHTUB_HEIGHT, 180, mats, col)
+    pivot = empty("Bathroom Cupboard", col, (right, r["top"], 0), rot_z=90)
+    sink_cupboard("Bathroom Cupboard", y0 - r["top"], BATH_CUPBOARD_DEPTH, mats, col, pivot,
+                  height=BATH_CUPBOARD_HEIGHT, doors=3)
+
+    # Shower glass across the niche's opening, flush with the bathroom side of
+    # the wall below it, from the pillar down.
+    gx, (gy1, gy0) = r["bath"][1], r["tub_y"]
+    gy0 += BATH_C_SHOWER_OPENING
+    box("Shower Glass", gx - 1, gx, gy0, gy1, 0, GLASS_WALL_HEIGHT, mats["clear_glass"], col)
+    box("Shower Glass Edge", gx - 1.5, gx + 0.5, gy0, gy0 + 1, 0, GLASS_WALL_HEIGHT,
+        mats["metal"], col)
+    # Shower head on the pillar, the niche's top wall, centred on it.
+    shower_head("Shower", (r["tub_x"][0] + r["tub_x"][1]) / 2, gy1, 90, SHOWER_ARM, mats, col)
+
+    # Toilet room.
+    (tx1, tx0), (ty1, ty0) = r["toilet"], r["toilet_y"]
+    toilet("Toilet", tx1 - TALL_TOILET_FROM_RIGHT, ty0, 0, mats, col)
+    xs = tx0 + BATH_C_SINK_WIDTH
+    pivot = empty("Toilet Sink Cupboard", col, (xs, ty1, 0), rot_z=180)
+    sink_cupboard("Toilet Sink Cupboard", BATH_C_SINK_WIDTH, BATH_C_SINK_DEPTH, mats, col, pivot)
+    # Closet from the sink cupboard to the cut corner at its front, its back
+    # corner cut along it.
+    (xt, yt), _ = toilet_corner_inner(r, BATH_C_CORNER_CUT)
+    xc = min(tx1, xt + yt - (ty1 - BATH_C_CLOSET_DEPTH))
+    pivot = empty("Toilet Closet", col, (xc, ty1, 0), rot_z=180)
+    cupboard("Toilet Closet", xc - xs, BATH_C_CLOSET_DEPTH, TOILET_CLOSET_HEIGHT, 2,
+             mats, col, pivot)
+    for part in list(pivot.children):
+        cut(part, toilet_corner_cutter(f"{part.name} Cutter", mats, col, r, BATH_C_CORNER_CUT))
 
 
 def build_furniture(mats, col):
@@ -1220,13 +1590,10 @@ def build_furniture(mats, col):
         bpy.context.view_layer.layer_collection.children[layout_col.name].exclude = n != 1
 
     build_closet_variants(mats, r)
-    for name, build in (("a", bathroom_a), ("b", bathroom_b)):
+    for name, build in (("a", bathroom_a), ("b", bathroom_b), ("c", bathroom_c)):
         bath_col = collection(f"Bathroom {name}")
-        build(mats, bath_col, r)
+        build(mats, bath_col, bathroom_rooms(r, name))
         bpy.context.view_layer.layer_collection.children[bath_col.name].exclude = name != "a"
-    # The separate toilet room, the same in every layout.
-    toilet("Toilet", r["toilet"][0], sum(r["toilet_y"]) / 2, 90, mats, col)
-    build_closet_doors(mats, col, r)
     build_beds(mats, col, r)
 
 
