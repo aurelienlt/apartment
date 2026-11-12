@@ -6,10 +6,10 @@
 BLENDER ?= blender
 PYTHON  ?= python3
 
-PLANS := $(foreach set,0 1 2,$(foreach wall,left top right,plans/kitchen_$(wall)_colors$(set).svg))
+PLANS := $(foreach set,0 1 2 3,$(foreach wall,left top right table,plans/kitchen_$(wall)_colors$(set).svg))
 # Floor plans of the whole apartment, one per furniture and bathroom layout, drawn from
 # the 3D scene in a single Blender run.
-APARTMENT := $(foreach n,1 2 3 4 5 6 7 8,$(foreach b,a b c,plans/apartment_layout$(n)$(b).svg))
+APARTMENT := $(foreach n,1 2 3 4 5 6 7 8 9,$(foreach b,a b c,plans/apartment_layout$(n)$(b).svg))
 
 .PHONY: all plans plan-blend clean
 

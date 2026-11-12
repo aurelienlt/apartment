@@ -79,6 +79,7 @@ BALCONY_DEPTH = 105.7
 # top band leaves (305) so the outside walls stay straight.
 THICK_WALL_LENGTH = 203.9         # under the closet, THICK_WALL thick (plan: 2039)
 CLOSET_HEIGHT, CLOSET_DEPTH = 80, 60       # bedroom 1 closet, at the top of its wall
+BATHTUB_LENGTH, BATHTUB_WIDTH = 170, 80   # every bathtub, outside
 BATHTUB_HEIGHT = 55               # assumed
 ROOM_DOOR_WIDTH = 80              # assumed: bedrooms, small balcony
 BATH_DOOR_WIDTH = 70              # assumed: bathroom, toilet
@@ -115,16 +116,21 @@ TALL_TOILET_FROM_RIGHT = 45       # its toilet against its bottom wall, centred 
 # Bathroom layout b (from bathroom2.svg, simplified).
 # Bathroom layout c: the bathtub at the top along the kitchen wall, the shower
 # in the niche behind glass, the toilet room taller with a sink and a closet.
-BATH_C_TUB_LENGTH, BATH_C_TUB_WIDTH = 180, 80
+BATH_C_STEPS = 20, 40             # steps beside the bathtub, from the bathroom to the top wall
+BATH_C_GLASS_SHIFT = 5            # shower glass this far left of the wall's bathroom face
+TOWEL_RACK = 5, 120, 6            # its towel rack: margin to the glass' ends, height,
+                                  # off the glass (assumed)
+SHAMPOO_NOOK = 30, 30, 7, 110     # in the shower's wall to the toilet room: width, height,
+                                  # depth, bottom (assumed)
 BATH_C_SHOWER_OPENING = 40        # shower glass stops this far from the niche's bottom
 BATH_C_SINK_WIDTH, BATH_C_SINK_DEPTH = 80, 50      # along the toilet room's top wall...
 BATH_C_CLOSET_DEPTH = 30          # ...then a closet over the rest of it
-TOILET_CLOSET_HEIGHT = 200        # bathrooms b and c (assumed)
+TOILET_CLOSET_PLANK = 10          # bathrooms b and c: up to this plank under the ceiling,
+TOILET_CLOSET_SHELVES = 140, 195  # open from the floor up to the first shelf
 BATH_B_RAISE = 12                 # raised floor at the top of the bathroom
 # Diagonal bathtub on the real floor, its ends fully round, BATH_B_TUB_GAP from
 # the top wall, the kitchen wall and the pillar's corner; the top corners of
 # the room are filled in parallel to it, the left one BATH_B_CORNER_GAP away.
-BATH_B_TUB_LENGTH, BATH_B_TUB_WIDTH = 170, 80
 BATH_B_TUB_GAP = 10
 BATH_B_CORNER_GAP = 20
 BATH_B_GLASS_EXTRA = 20           # the shower glass goes on this far onto the raised floor
@@ -143,10 +149,14 @@ BATH_B_RAISED_FLOOR_COLOR = "#d9d9d9"
 BATH_B_TUB_BLOCK_COLOR = "#bfbfbf"
 SHOWER_ARM = 30                   # shower heads' centre from their wall (assumed)
 BATH_A_RAISE = 10                 # bathroom a: raised floor over its top part
-TUB_RIM, TAP_RIM = 10, 20         # bathrooms a and c: tub rim, wider at the tap end (assumed)
+TUB_RIM, TAP_RIM = 10, 20         # bathrooms a and c: tub rim, wider at a's tap end (assumed)
+BATH_MIRROR_SCALE = 2             # the bathrooms' mirrors are this many times wider
 SINK_WIDTH = 40                   # every bathroom sink, centred on its cupboard
 FRONT_COLOR = "#e3d3b0"           # cupboard doors: the kitchen's default beige
 DESK_HEIGHT = 75                  # assumed
+PILLAR_RADIUS = 3                 # that pillar, round (assumed)
+PILLAR_OVERLAP = 10               # a desk and the shelf beside it overlap this much on
+                                  # each side of the pillar between them (assumed)
 COFFEE_TABLE_LENGTH, COFFEE_TABLE_WIDTH = 100, 60
 COFFEE_TABLE_HEIGHT = 42          # assumed
 COFFEE_TABLE_GAP = 40             # from the sofa front (assumed)
@@ -155,8 +165,14 @@ COFFEE_TABLE_GAP = 40             # from the sofa front (assumed)
 # the far end a half circle; its axis 100 cm from the open space's right edge.
 DINING_LENGTH, DINING_WIDTH = 190, 90
 DINING_WALL_GAP = 10              # between the flat end and the bottom wall (layout 1)
-LAYOUTS = (1, 2, 3, 4, 5, 6, 7, 8)  # furniture layouts, each its own collection
-CLOSET_LAYOUTS = (1, 2, 3, 4, 5)  # layouts keeping bedroom 1's closet and the library
+LAYOUTS = (1, 2, 3, 4, 5, 6, 7, 8, 9)  # furniture layouts, each its own collection
+# What stands on bedroom 1's wall, above the thick one, by layout: its closet
+# with the library around it, just the thin wall, or the thin wall with a
+# small empty box of planks in the corner, the library around it.
+CLOSET_VARIANTS = {"Bedroom 1 Closet": (1, 2, 3, 4, 5), "No Closet": (6, 7, 8),
+                   "Bedroom 1 Box": (9,)}
+CLOSET_BOX = 40, 70               # the empty box inside: deep from the thin wall, long
+                                  # along it (planks BOARD thick on its side and bottom)
 CORNER_DESK_SIDE = 100            # layout 6: corner desk along the bedroom wall (assumed)
 BOTTOM_DESK_LENGTH = 160          # layout 2: desk along the bottom wall
 LOW_SHELF_HEIGHT = 45             # layout 2: lower shelf after it (assumed)
@@ -173,9 +189,10 @@ CHAIR_ROUNDING = 2                # bevel radius on every chair edge
 BOOKSHELF_DEPTH = 20
 BOOKSHELF_HEIGHT = 200            # assumed
 BOOKSHELF_SHELVES = 5             # boards above the bottom one (assumed)
+LIBRARY_SHELVES = 6               # the library around bedroom 1's closet, up to the ceiling
 
 # Upright piano, keyboard facing the bottom of the plan.
-PIANO_WIDTH, PIANO_DEPTH = 150, 55
+PIANO_WIDTH, PIANO_DEPTH = 150, 65
 PIANO_HEIGHT = 125                # assumed
 PIANO_FROM_BATHROOM = 100         # back of the case to the bathroom's bottom wall
 PIANO_FROM_RIGHT = 240            # right side to the right wall
@@ -186,6 +203,35 @@ PIANO_STOOL_GAP = 7               # from the front of the piano
 # Beds: head against a wall, long side 40 cm from the window's wall.
 BED_LENGTH, BED_WIDTH = 200, 160
 BED_FROM_WINDOW = 40
+MATTRESS_HEIGHT = 22              # bedroom 1: just the mattress, on the floor
+# Bedroom 1: open cube shelves on the top wall, rows x columns.
+CUBES = 2, 4
+CUBE_SIZE, CUBE_DEPTH = 50, 40
+CUBE_COLORS = ("#f6c1c1", "#bfe0f5", "#c7efd1", "#fbe6ae", "#dcccf3", "#fcd2b3",
+               "#bde7e2", "#f3cde3")         # pastels, one per cube
+# Bedroom 2: a larger wood frame under the same mattress, 30 from the left
+# wall; a 170 long, 25 high shelf in between; bedside table and desk 50 deep on
+# its right (the bedside table 40); a 20 deep shelf at 40 along the bottom wall.
+BED2_FRAME = 175, 230             # width, length
+BED2_FROM_LEFT = 30
+BED2_SIDE_SHELF = 170, 25         # length along the left wall, height
+BED2_DESK_DEPTH = 50              # also the bedside table's width...
+BEDSIDE_DEPTH = 40                # ...which is less deep, with a drawer this high
+BEDSIDE_DRAWER = 15               # (assumed)
+BED2_LEFT_BEDSIDE = 40            # shelf on the bed's left, at the bedside table's height
+BEDSIDE_HEIGHT = 50               # assumed
+WARDROBE_RIGHT = 100              # its wardrobe's part behind 2 full doors; beside the
+WARDROBE_RIGHT_PARTS = 10, (2, 30), 10   # its right part, from the floor: plank, drawers
+                                  # (count, height), plank under the ceiling; between,
+                                  # hanging space up to a shelf, its bar's middle, and an
+WARDROBE_SHELF, WARDROBE_BAR = 190, 185   # open shelf above
+WARDROBE_OPEN = 60                # desk, an open part this high above the desk's height
+WARDROBE_FRONT_COLOR = "#fffef6"  # its doors: like the kitchen's in color set 3...
+WARDROBE_HANDLE = 2.5             # ...with a finger gap as handle
+BED2_WALL_SHELF = 20, 40          # depth, height; it stops this far before the door's
+BED2_WALL_SHELF_END = 20, 10      # casing, its free corner rounded by this
+BED2_CORNER_SHELF = 45, 20        # square shelf in its corner: size, outer corner radius
+BED2_CORNER_CUBE = 30, 35, 30     # black cube under it, diagonal: width, depth, height
 
 APT_WIDTH = KITCHEN_WIDTH + BATH_WIDTH + TOILET_WIDTH + BEDROOM2_WIDTH + 3 * INT_WALL
 APT_HEIGHT = TOP_BAND + MID_BAND + BOTTOM_BAND + 2 * INT_WALL
@@ -779,25 +825,45 @@ def dining(name, x, y, rot_z, mats, col, chair_side=1):
               mats, col, pivot)
 
 
-def build_bookshelves(mats, col, r):
+def build_bookshelves(mats, col, r, side_x=None, bottom_y=None, sliding=None):
     """L-shaped open light-wood bookshelf hugging bedroom 1's closet from the
-    open space and the hall, with a rounded outer corner."""
-    d, t, wood = BOOKSHELF_DEPTH, BOARD, mats["wood"]
-    side_x = r["closet"][0] + INT_WALL          # outer face of the closet side wall
-    bottom_y = r["closet_y"][1] - INT_WALL      # below the closet bottom wall
+    open space and the hall, with a rounded outer corner, up to the ceiling
+    (LIBRARY_SHELVES boards above the bottom one, the top one under it).
+    `sliding` (door_groups): the part along the hall, rounded corner included,
+    slides along it away from the bedroom door to reveal what is behind, by
+    as much as it is long up to the open space's leg: in place in the closed
+    group, slid in the open one."""
+    d, t, wood, h, n = BOOKSHELF_DEPTH, BOARD, mats["wood"], WALL_HEIGHT, LIBRARY_SHELVES
+    if side_x is None:
+        side_x = r["closet"][0] + INT_WALL      # outer face of the closet side wall
+    if bottom_y is None:
+        bottom_y = r["closet_y"][1] - INT_WALL  # below the closet bottom wall
     hall_y = r["hall"][1]                       # hall face of bedroom 1's top wall
     end_x = r["bed1_door"][1] + DOOR_FRAME_WIDTH  # stop at the door casing
     outline = ([(side_x, bottom_y), (side_x + d, bottom_y)]
                + arc(side_x, hall_y, d, 0, 90)
                + [(end_x, hall_y + d), (end_x, hall_y), (side_x, hall_y)])
-    step = (BOOKSHELF_HEIGHT - t) / BOOKSHELF_SHELVES
-    for k in range(BOOKSHELF_SHELVES + 1):
-        z = k * step
-        prism(f"Bookshelf Board {k + 1}", outline, z, z + t, wood, col)
-    box("Bookshelf End A", side_x, side_x + d, bottom_y, bottom_y + t, 0, BOOKSHELF_HEIGHT,
-        wood, col)
-    box("Bookshelf End B", end_x, end_x + t, hall_y, hall_y + d, 0, BOOKSHELF_HEIGHT,
-        wood, col)
+    step = (h - t) / n
+
+    def shelves(name, outline, col, dx=0):
+        for k in range(n + 1):
+            z = k * step
+            prism(f"{name} Board {k + 1}", [(x + dx, y) for x, y in outline], z, z + t, wood,
+                  col)
+
+    box("Bookshelf End A", side_x, side_x + d, bottom_y, bottom_y + t, 0, h, wood, col)
+    if not sliding:
+        shelves("Bookshelf", outline, col)
+        box("Bookshelf End B", end_x, end_x + t, hall_y, hall_y + d, 0, h, wood, col)
+        return
+    shelves("Bookshelf", [(side_x, bottom_y), (side_x + d, bottom_y), (side_x + d, hall_y),
+                          (side_x, hall_y)], col)
+    hall = ([(end_x, hall_y), (side_x + d, hall_y)] + arc(side_x, hall_y, d, 0, 90)
+            + [(end_x, hall_y + d)])
+    for state, dx in (("Closed", 0), ("Open", side_x - end_x)):
+        shelves(f"Bookshelf Sliding {state}", hall, sliding[state], dx)
+        box(f"Bookshelf Sliding End {state}", end_x + dx, end_x + t + dx, hall_y, hall_y + d, 0, h,
+            wood, sliding[state])
 
 
 def piano(name, x, y, rot_z, mats, col):
@@ -831,24 +897,53 @@ def toilet(name, x, y, rot_z, mats, col, z=0):
     rounded(box(f"{name} Seat", -18, 18, 17, 65, 40, 42, c, col, pivot), 8)
 
 
-def cupboard(name, width, depth, height, doors, mats, col, pivot):
+DOOR_GROUPS = {}
+
+
+def door_groups(col):
+    """The "<col> Doors Closed" and "<col> Doors Open" child collections of
+    col, for doors shown closed or opened 90 degrees (the open one is
+    excluded once built, see build_furniture)."""
+    if col.name not in DOOR_GROUPS:
+        groups = {}
+        for state in ("Closed", "Open"):
+            groups[state] = bpy.data.collections.new(f"{col.name} Doors {state}")
+            col.children.link(groups[state])
+        DOOR_GROUPS[col.name] = groups
+    return DOOR_GROUPS[col.name]
+
+
+def cupboard(name, width, depth, height, doors, mats, col, pivot, shelves=None, bottom=True):
     """White cupboard in its pivot's frame: X along its width, Y from the wall
-    (0) to the front, on a 20 plinth set back 5, one shelf, `doors` doors."""
-    t, plinth, g, white = BOARD, 20, FRONT_GAP, mats["cabinet"]
+    (0) to the front, on a 20 plinth set back 5 (or, without `bottom`, open
+    down to the floor), one shelf halfway (or at the `shelves` heights),
+    `doors` doors, closed and open (door_groups), hinged on their outer
+    sides."""
+    t, g, white = BOARD, FRONT_GAP, mats["cabinet"]
+    plinth = 20 if bottom else 0
     back = depth - t
-    for label, bounds in (("Side A", (0, t, 0, back, plinth, height)),
-                          ("Side B", (width - t, width, 0, back, plinth, height)),
-                          ("Bottom", (t, width - t, 0, back, plinth, plinth + t)),
-                          ("Top", (t, width - t, 0, back, height - t, height)),
-                          ("Back", (t, width - t, 0, t, plinth, height)),
-                          ("Shelf", (t, width - t, t, back - 1, (plinth + height) / 2 - t / 2,
-                                     (plinth + height) / 2 + t / 2)),
-                          ("Plinth", (0, width, depth - 5 - t, depth - 5, 0, plinth))):
+    if shelves is None:
+        shelves = [(plinth + height) / 2]
+    parts = [("Side A", (0, t, 0, back, plinth, height)),
+             ("Side B", (width - t, width, 0, back, plinth, height)),
+             ("Top", (t, width - t, 0, back, height - t, height)),
+             ("Back", (t, width - t, 0, t, plinth, height))]
+    parts += [(f"Shelf {k + 1}", (t, width - t, t, back - 1, z - t / 2, z + t / 2))
+              for k, z in enumerate(shelves)]
+    if bottom:
+        parts += [("Bottom", (t, width - t, 0, back, plinth, plinth + t)),
+                  ("Plinth", (0, width, depth - 5 - t, depth - 5, 0, plinth))]
+    for label, bounds in parts:
         box(f"{name} {label}", *bounds, white, col, pivot)
-    step = width / doors
+    groups, step = door_groups(col), width / doors
     for k in range(doors):
-        box(f"{name} Door {k + 1}", k * step + g, (k + 1) * step - g, back, depth,
-            plinth + g, height - g, mats["front"], col, pivot)
+        x0, x1 = k * step + g, (k + 1) * step - g
+        z0, z1 = plinth + g, height - g
+        box(f"{name} Door {k + 1} Closed", x0, x1, back, depth, z0, z1, mats["front"],
+            groups["Closed"], pivot)
+        hx = x0 if k < doors / 2 else x1 - t               # hinged on the outer side
+        box(f"{name} Door {k + 1} Open", hx, hx + t, depth, depth + x1 - x0, z0, z1,
+            mats["front"], groups["Open"], pivot)
 
 
 def toilet_room_diagonal(r):
@@ -926,8 +1021,16 @@ def bathroom_a(mats, col, r):
     bath_right = r["bath"][0]               # face of the wall shared with the kitchen
     toilet_room(mats, col, r)
     toilet("Toilet", r["toilet"][0], sum(r["toilet_y"]) / 2, 90, mats, col)
-    (tx1, tx0), (ty1, ty0) = r["tub_x"], r["tub_y"]
-    # Bathtub filling the niche, its rim wider at the bottom end for the tap.
+    (nx1, nx0), (ny1, ny0) = r["tub_x"], r["tub_y"]
+    # Bathtub in the niche against the pillar and on its open side, its rim
+    # wider at the bottom end for the tap; a block as high as it fills the
+    # rest of the niche (along the back wall and at the tap end).
+    tx1, ty1 = nx1, ny1
+    tx0, ty0 = tx1 - BATHTUB_WIDTH, ty1 - BATHTUB_LENGTH
+    block_mat = principled("Bathtub Block", hex_color(BATH_B_TUB_BLOCK_COLOR), 0.6)[0]
+    block = box("Bathtub Block", nx0, nx1, ny0, ny1, 0, BATHTUB_HEIGHT, block_mat, col)
+    cut(block, box("Bathtub Block Cutter", tx0, tx1 + 1, ty0, ty1 + 1, -1, BATHTUB_HEIGHT + 1,
+                   block_mat, col))
     m, mt = TUB_RIM, TAP_RIM
     tub = box("Bathtub", tx0, tx1, ty0, ty1, 0, BATHTUB_HEIGHT, mats["ceramic"], col)
     cut(tub, box("Bathtub Cutter", tx0 + m, tx1 - m, ty0 + mt, ty1 - m, 12,
@@ -966,19 +1069,95 @@ def bathroom_a(mats, col, r):
     length = y_b - r["top"]
     pivot = empty("Bathroom Cupboard", col, (bath_right, r["top"], 0), rot_z=90)
     sink_cupboard("Bathroom Cupboard", length, BATH_CUPBOARD_DEPTH, mats, col, pivot,
-                  height=BATH_CUPBOARD_HEIGHT, doors=3)
+                  height=BATH_CUPBOARD_HEIGHT, doors=3, mirror_scale=BATH_MIRROR_SCALE)
 
 
-def closet_doors(name, x, y_top, y_bottom, mats, col):
-    """Full-height light wood doors, about 60 cm each, closing a closet whose
-    opening is the plane x from y_top down to y_bottom."""
-    g = FRONT_GAP
+def bedroom2_wardrobe(mats, col, r):
+    """Bedroom 2's wardrobe, between the bathtub niche's wall and bedroom 2,
+    from the top wall to the toilet room: its right part (lower in plan)
+    WARDROBE_RIGHT long behind 2 full-height doors; its left part, beside the
+    desk, a door up to the desk's height, an open part above with a shelf
+    inside, a door above that up to the ceiling. Doors like the kitchen's:
+    WARDROBE_FRONT_COLOR, a finger gap as handle (between the two right
+    doors, on the right side of the left ones)."""
+    # The doors' back plane (their faces flush with the toilet room's wall
+    # below), and the back wall.
+    x, back = r["bed2"][0] + 2, r["tub_x"][1] - INT_WALL
+    y_top, y_bot = -(THICK_WALL - OUT_WALL), r["tub_y"][1]
+    ym = y_bot + WARDROBE_RIGHT
+    wood, g, t, hg = mats["wood"], FRONT_GAP, BOARD, WARDROBE_HANDLE
+    front = principled("Wardrobe Front", hex_color(WARDROBE_FRONT_COLOR), 0.35)[0]
+    # Its doors, closed or opened 90 degrees into the bedroom: two child
+    # collections, the open one hidden.
+    states = door_groups(col)
+
+    def door(name, ya, yb, z0, z1, hinge):
+        # hinge: the y of its hinged edge (ya or yb).
+        box(f"{name} Closed", x - 2, x, ya, yb, z0, z1, front, states["Closed"])
+        y0 = hinge if hinge == ya else hinge - 2
+        box(f"{name} Open", x - 2 - (yb - ya), x - 2, y0, y0 + 2, z0, z1, front, states["Open"])
+
+    # Right part: two doors hinged on their outer edges, the handle gap between.
+    step = (ym - y_bot) / 2
+    door("Bedroom 2 Wardrobe Door 1", ym - step + hg / 2, ym - hg / 2, 0.5, WALL_HEIGHT - 0.5,
+         ym - hg / 2)
+    door("Bedroom 2 Wardrobe Door 2", y_bot + hg / 2, y_bot + step - hg / 2, 0.5,
+         WALL_HEIGHT - 0.5, y_bot + hg / 2)
+    # Behind them, from the floor: a plank, drawers, a hanging space with its
+    # bar, an open shelf at its top, and a plank under the ceiling.
+    white, metal = mats["cabinet"], mats["metal"]
+    y0, y1 = y_bot, ym - t / 2
+    plank, (n, dh), top_plank = WARDROBE_RIGHT_PARTS
+    box("Bedroom 2 Wardrobe Plinth", x, x + t, y0, y1, 0, plank, white, col)
+    for k in range(n):
+        z = plank + k * dh
+        box(f"Bedroom 2 Wardrobe Drawer {k + 1} Front", x, x + t, y0 + g, y1 - g, z + g,
+            z + dh - g, white, col)
+        for j, part in enumerate(((x + t, back - 2, y0 + 1, y0 + 2.5, z + 2, z + dh - 5),
+                                  (x + t, back - 2, y1 - 2.5, y1 - 1, z + 2, z + dh - 5),
+                                  (x + t, back - 2, y0 + 1, y1 - 1, z + 2, z + 3.5),
+                                  (back - 3.5, back - 2, y0 + 1, y1 - 1, z + 2, z + dh - 5))):
+            box(f"Bedroom 2 Wardrobe Drawer {k + 1} Box {j + 1}", *part, white, col)
+    zh = plank + n * dh                                  # the hanging space's bottom
+    box("Bedroom 2 Wardrobe Drawers Top", x, back, y0, y1, zh - t, zh, white, col)
+    zs, zb = WARDROBE_SHELF, WARDROBE_BAR
+    box("Bedroom 2 Wardrobe Shelf", x, back, y0, y1, zs, zs + t, white, col)
+    box("Bedroom 2 Wardrobe Bar", (x + back) / 2 - 1.25, (x + back) / 2 + 1.25, y0, y1,
+        zb - 1.25, zb + 1.25, metal, col)
+    box("Bedroom 2 Wardrobe Top Plank", x, x + t, y0, y1, WALL_HEIGHT - top_plank,
+        WALL_HEIGHT, white, col)
+    # The open part's bottom is the desk going on inside (3 thick, like it).
+    z0, z1 = DESK_HEIGHT, DESK_HEIGHT + WARDROBE_OPEN
+    box("Bedroom 2 Wardrobe Divider", x, back, ym - t / 2, ym + t / 2, 0, WALL_HEIGHT, wood, col)
+    box("Bedroom 2 Wardrobe Desk Shelf", x, back, ym + t / 2, y_top, z0 - 3, z0, wood, col)
+    # The right part's planks at the bottom and under the ceiling, behind
+    # the left part's doors too.
+    plank, _, top_plank = WARDROBE_RIGHT_PARTS
+    box("Bedroom 2 Wardrobe Left Plinth", x, x + t, ym + t / 2, y_top, 0, plank, white, col)
+    box("Bedroom 2 Wardrobe Left Top Plank", x, x + t, ym + t / 2, y_top,
+        WALL_HEIGHT - top_plank, WALL_HEIGHT, white, col)
+    zb = (z0 - 3) / 2                               # a shelf behind the lower door, halfway
+    box("Bedroom 2 Wardrobe Lower Shelf", x, back, ym + t / 2, y_top, zb - t / 2, zb + t / 2,
+        wood, col)
+    for k, z in enumerate(((z0 + z1) / 2, z1)):
+        box(f"Bedroom 2 Wardrobe Board {k + 1}", x, back, ym + t / 2, y_top, z - t / 2, z + t / 2,
+            wood, col)
+    # Left part's doors: the handle gap on their right side (by the divider),
+    # hinged on their left; the lower one opens under the desk.
+    for k, (a, c) in enumerate(((0.5, z0 - 3 - g), (z1 + t / 2 + g, WALL_HEIGHT - 0.5))):
+        door(f"Bedroom 2 Wardrobe Left Door {k + 1}", ym + hg, y_top - g, a, c, y_top - g)
+
+
+def closet_doors(name, x, y_top, y_bottom, mats, col, mat=None, g=FRONT_GAP):
+    """Full-height doors, about 60 cm each, closing a closet whose opening is
+    the plane x from y_top down to y_bottom: light wood, or `mat` with gaps of
+    2 g between them."""
     count = math.ceil((y_top - y_bottom) / 60)
     step = (y_top - y_bottom) / count
     for k in range(count):
         y1 = y_top - k * step
         box(f"{name} Door {k + 1}", x - 2, x, y1 - step + g, y1 - g, 0.5,
-            WALL_HEIGHT - 0.5, mats["wood"], col)
+            WALL_HEIGHT - 0.5, mat or mats["wood"], col)
 
 
 def bathroom_rooms(r, bath):
@@ -1030,7 +1209,17 @@ def toilet_room(mats, col, r, diagonal=False, corner_cut=0):
         wall("Wall Toilet Top", bed2[0], bath[1] - k - i, toilet_y[0], toilet_y[0] + i, w, col)
         toilet_corner("Wall Toilet Corner", mats, col, r, corner_cut)
     # Bedroom 2's wardrobe, between the bathtub niche wall and bedroom 2.
-    closet_doors("Bedroom 2 Wardrobe", toilet[1], 0, tub_y[1], mats, col)
+    bedroom2_wardrobe(mats, col, r)
+
+
+def toilet_closet(width, depth, doors, mats, col, pivot):
+    """The toilet room's closet, in its pivot's frame as cupboard(): open from
+    the floor, shelves, up to a TOILET_CLOSET_PLANK plank under the ceiling."""
+    h = WALL_HEIGHT - TOILET_CLOSET_PLANK
+    cupboard("Toilet Closet", width, depth, h, doors, mats, col, pivot,
+             shelves=TOILET_CLOSET_SHELVES, bottom=False)
+    box("Toilet Closet Top Plank", 0, width, depth - BOARD, depth, h, WALL_HEIGHT,
+        mats["cabinet"], col, pivot)
 
 
 def tap(name, x, y, z, rot_z, mats, col, parent=None):
@@ -1056,9 +1245,11 @@ def shower_head(name, x, y, rot_z, arm, mats, col):
 
 
 def sink_cupboard(name, width, depth, mats, col, pivot, sink_width=SINK_WIDTH, height=85,
-                  doors=2):
+                  doors=2, mirror_scale=1):
     """Cupboard with a ceramic sink of sink_width centred on top, a tap behind
-    it and a mirror on the wall above it; in the pivot's frame as cupboard()."""
+    it and a mirror on the wall above it (20 wider than the sink, times
+    mirror_scale, at most the cupboard's width less 10); in the pivot's frame
+    as cupboard()."""
     cupboard(name, width, depth, height, doors, mats, col, pivot)
     c, h, sw = mats["ceramic"], height, sink_width
     x0, x1 = (width - sw) / 2, (width + sw) / 2
@@ -1067,15 +1258,26 @@ def sink_cupboard(name, width, depth, mats, col, pivot, sink_width=SINK_WIDTH, h
                   pivot))
     # Tap on the sink's rim against the wall, its spout over the bowl.
     tap(f"{name} Tap", width / 2, 8, h + 5, 180, mats, col, parent=pivot)
-    mw = min(width - 10, sw + 20)
+    mw = min(width - 10, (sw + 20) * mirror_scale)
     box(f"{name} Mirror", (width - mw) / 2, (width + mw) / 2, 0, 1, 110, 190, mats["metal"],
         col, pivot)
 
 
+def closet_box(r):
+    """Bedroom 1's box (CLOSET_VARIANTS): its left side (the thin wall's
+    face), the outer face of its side plank and of its bottom plank, which
+    the library follows."""
+    x0, (depth, length) = r["thick"][1] + INT_WALL, CLOSET_BOX
+    return dict(x0=x0, side_x=x0 + depth + BOARD, bottom_y=r["hall"][1] - BOARD - length)
+
+
+def closet_variant(n):
+    """Name of the CLOSET_VARIANTS collection layout n uses."""
+    return next(name for name, layouts in CLOSET_VARIANTS.items() if n in layouts)
+
+
 def build_closet_variants(mats, r):
-    """Bedroom 1's closet with the library around it (layouts in
-    CLOSET_LAYOUTS), or a thin wall above the thick one instead (the other layouts):
-    two collections, the closet one shown."""
+    """The CLOSET_VARIANTS collections, the closet one shown."""
     w, i, h = mats["wall"], INT_WALL, WALL_HEIGHT
     thick, thick_y, closet, hall = r["thick"], r["thick_y"], r["closet"], r["hall"]
     cy0, cy1 = r["closet_y"]
@@ -1092,6 +1294,24 @@ def build_closet_variants(mats, r):
     # the bedroom side, up to the corner with bedroom 1's top wall (plan: 1177).
     col = collection("No Closet")
     box("Thin Wall Upper", thick[1], thick[1] + i, thick_y[0], r["bottom"][0], 0, h, w, col)
+    bpy.context.view_layer.layer_collection.children[col.name].exclude = True
+
+    # The thin wall too, and in the corner of the open space against it and
+    # the hall an empty box, planks on its side and bottom, open to the hall
+    # behind the library's part there, which slides away to reveal it; below,
+    # a plank flush with the thick wall's face, empty behind (closet_box).
+    col = collection("Bedroom 1 Box")
+    wood, t, b = mats["wood"], BOARD, closet_box(r)
+    x0, x1, y0, y1 = b["x0"], b["side_x"], b["bottom_y"], hall[1]
+    box("Thin Wall Upper", thick[1], thick[1] + i, thick_y[0], r["bottom"][0], 0, h, w, col)
+    # (Open towards the hall, behind the library's sliding part.)
+    box("Box Plank Side", x1 - t, x1, y0, y1, 0, h, wood, col)
+    box("Box Plank Bottom", x0, x1 - t, y0, y0 + t, 0, h, wood, col)
+    box("Box Plank Wall", thick[0] - t, thick[0], thick_y[0], y0, 0, h, wood, col)
+    groups = door_groups(col)
+    build_bookshelves(mats, col, r, side_x=x1, bottom_y=y0, sliding=groups)
+    bpy.context.view_layer.layer_collection.children[col.name].children[
+        groups["Open"].name].exclude = True
     bpy.context.view_layer.layer_collection.children[col.name].exclude = True
 
 
@@ -1111,22 +1331,20 @@ def wall_desk(name, mats, col, r):
 
 def bottom_desk(name, mats, col, r):
     """Desk along the open space's bottom wall from the bedroom 1 wall for
-    BOTTOM_DESK_LENGTH; a lower shelf continues along the wall up to the
-    balcony's side wall."""
+    BOTTOM_DESK_LENGTH; a single lower shelf continues along the wall up to
+    the balcony's side wall. They overlap by PILLAR_OVERLAP on each side of a
+    round pillar, from the floor up to the desk through the shelf."""
     x0 = r["thick"][0]
     y0 = -APT_HEIGHT
-    d, h, t, wood = DESK_DEPTH, DESK_HEIGHT, 3, mats["wood"]
-    xe = x0 + BOTTOM_DESK_LENGTH
-    box(f"{name} Top", x0, xe, y0, y0 + d, h - t, h, wood, col)
+    d, h, t, wood, ov = DESK_DEPTH, DESK_HEIGHT, 3, mats["wood"], PILLAR_OVERLAP
+    xe = x0 + BOTTOM_DESK_LENGTH                  # the pillar's middle
+    box(f"{name} Top", x0, xe + ov, y0, y0 + d, h - t, h, wood, col)
     box(f"{name} Leg A", x0, x0 + t, y0, y0 + d, 0, h - t, wood, col)
-    box(f"{name} Leg B", xe - t, xe, y0, y0 + d, 0, h - t, wood, col)
-    box(f"{name} Back", x0 + t, xe - t, y0, y0 + 2, h - 35, h - t, wood, col)
-    # Lower shelf: top, bottom, one board between, end panel.
+    cylinder(f"{name} Pillar", xe, y0 + d / 2, 0, h - t, PILLAR_RADIUS, wood, col)
+    box(f"{name} Back", x0 + t, xe, y0, y0 + 2, h - 35, h - t, wood, col)
+    # Lower shelf: one board, from under the desk to the balcony's side wall.
     s1, sh = -BALCONY_WIDTH, LOW_SHELF_HEIGHT
-    box(f"{name} Shelf Top", xe, s1, y0, y0 + d, sh - 2, sh, wood, col)
-    box(f"{name} Shelf Middle", xe, s1, y0, y0 + d, sh / 2 - 1, sh / 2 + 1, wood, col)
-    box(f"{name} Shelf Bottom", xe, s1, y0, y0 + d, 0, 2, wood, col)
-    box(f"{name} Shelf End", s1 - 2, s1, y0, y0 + d, 0, sh, wood, col)
+    box(f"{name} Shelf", xe - ov, s1, y0, y0 + d, sh - 2, sh, wood, col)
 
 
 def wall_bookshelf(name, mats, col, r):
@@ -1165,30 +1383,127 @@ def shelf_and_corner_desk(name, mats, col, r):
     box(f"{name} Back Side", xr - 2, xr, y0 + d, yt - t, h - 35, h - t, wood, col)
 
 
-def bed(name, pivot_xy, rot_z, mats, col):
-    """Bed in its own frame: head at local Y = 0, foot at Y = BED_LENGTH."""
+def bed(name, pivot_xy, rot_z, mats, col, frame=None):
+    """Bed in its own frame: head at local Y = 0, foot at Y = its length. Its
+    wood frame (width, length, headboard included) defaults to the mattress'
+    size; a larger one has the mattress centred on it."""
     pivot = empty(name, col, (*pivot_xy, 0), rot_z=rot_z)
-    w, L, wood = BED_WIDTH, BED_LENGTH, mats["wood"]
+    mw, ml, wood = BED_WIDTH, BED_LENGTH, mats["wood"]
+    w, L = frame or (mw, ml)
     box(f"{name} Frame", 0, w, 0, L, 5, 30, wood, col, pivot)
     box(f"{name} Headboard", 0, w, 0, 5, 0, 100, wood, col, pivot)
     for k, (fx, fy) in enumerate(((2, 6), (w - 7, 6), (2, L - 7), (w - 7, L - 7))):
         box(f"{name} Leg {k + 1}", fx, fx + 5, fy, fy + 5, 0, 5, wood, col, pivot)
-    rounded(box(f"{name} Mattress", 1, w - 1, 5, L - 1, 30, 52, mats["linen"], col, pivot), 4)
+    x0, y0 = (w - mw) / 2, 5 + (L - 5 - ml) / 2
+    rounded(box(f"{name} Mattress", x0 + 1, x0 + mw - 1, y0, y0 + ml - 1, 30, 52,
+                mats["linen"], col, pivot), 4)
     for k in range(2):
-        px = 8 + k * (w / 2)
-        rounded(box(f"{name} Pillow {k + 1}", px, px + w / 2 - 16, 10, 50, 52, 62,
+        px = x0 + 8 + k * (mw / 2)
+        rounded(box(f"{name} Pillow {k + 1}", px, px + mw / 2 - 16, y0 + 5, y0 + 45, 52, 62,
                     mats["linen"], col, pivot), 4)
 
 
 def build_beds(mats, col, r):
     inset = THICK_WALL - OUT_WALL  # thick walls reach into the bedrooms
-    # Bedroom 1: head on the (thick) left wall, window on the bottom wall.
-    # Local Y runs right (+X), local X up (+Y) from 40 cm above the bottom wall.
-    left = -APT_WIDTH + inset
-    bed("Bed Bedroom 1", (left, -APT_HEIGHT + BED_FROM_WINDOW + BED_WIDTH), -90, mats, col)
+    bedroom1_furniture(mats, col, r, -APT_WIDTH + inset)
     # Bedroom 2: head on the (thick) top wall, window on the left wall.
     # Local Y runs down (-Y), local X towards the window (-X).
-    bed("Bed Bedroom 2", (-APT_WIDTH + BED_FROM_WINDOW + BED_WIDTH, -inset), 180, mats, col)
+    bedroom2_furniture(mats, col, r, -inset)
+
+
+def bedroom1_furniture(mats, col, r, left):
+    """Bedroom 1 (left wall face `left`): a mattress with pillows on the floor
+    in the bottom-left corner, its head on the left wall; open cube shelves on the
+    top wall from the left wall, CUBES high and wide, in pastel colors."""
+    bottom = -APT_HEIGHT
+    rounded(box("Bedroom 1 Mattress", left, left + BED_LENGTH, bottom, bottom + BED_WIDTH, 0,
+                MATTRESS_HEIGHT, mats["linen"], col), 4)
+    for k in range(2):                              # pillows at the head, as on the beds
+        py = bottom + 8 + k * (BED_WIDTH / 2)
+        rounded(box(f"Bedroom 1 Pillow {k + 1}", left + 5, left + 45, py, py + BED_WIDTH / 2 - 16,
+                    MATTRESS_HEIGHT, MATTRESS_HEIGHT + 10, mats["linen"], col), 4)
+    rows, cols = CUBES
+    s, d, t = CUBE_SIZE, CUBE_DEPTH, BOARD
+    top = r["bottom"][0]                            # top wall's face
+    for row in range(rows):
+        for c in range(cols):
+            k = row * cols + c
+            mat = principled(f"Cube {k + 1}", hex_color(CUBE_COLORS[k % len(CUBE_COLORS)]),
+                             0.5)[0]
+            x0, z0 = left + c * s, row * s
+            parts = [(x0, x0 + s, top - t, top, z0, z0 + s),             # back
+                     (x0, x0 + t, top - d, top - t, z0, z0 + s),          # sides
+                     (x0 + s - t, x0 + s, top - d, top - t, z0, z0 + s),
+                     (x0 + t, x0 + s - t, top - d, top - t, z0, z0 + t),  # bottom, top
+                     (x0 + t, x0 + s - t, top - d, top - t, z0 + s - t, z0 + s)]
+            for j, part in enumerate(parts):
+                box(f"Bedroom 1 Cube {k + 1} Part {j + 1}", *part, mat, col)
+
+
+def bedroom2_furniture(mats, col, r, top):
+    """Bedroom 2 (wall faces: top `top`, left -APT_WIDTH): a large wood bed
+    BED2_FROM_LEFT from the left wall, its head on the top wall; a low shelf
+    between it and the left wall; on its right a bedside table going on into a
+    desk up to the wardrobe doors, a pillar between them, the desk going on
+    into the wardrobe as the bottom of its open part (its lower door opens
+    under it); a low shelf along the bottom wall up to the door."""
+    wood, t = mats["wood"], 3
+    fw, fl = BED2_FRAME
+    x0 = -APT_WIDTH + BED2_FROM_LEFT
+    x1 = x0 + fw
+    bed("Bed Bedroom 2", (x1, top), 180, mats, col, frame=BED2_FRAME)
+    # Left shelf: a board on two ends.
+    sl, sh = BED2_SIDE_SHELF
+    y1 = top - sl
+    box("Bedroom 2 Side Shelf Top", -APT_WIDTH, x0, y1, top, sh - 2, sh, wood, col)
+    for k, (a, c) in enumerate(((top - 2, top), (y1, y1 + 2))):
+        box(f"Bedroom 2 Side Shelf End {k + 1}", -APT_WIDTH, x0, a, c, 0, sh - 2, wood, col)
+    # Bedside table, then desk up to the wardrobe doors (2 thick).
+    d, bh, dh = BED2_DESK_DEPTH, BEDSIDE_HEIGHT, DESK_HEIGHT
+    xb, xe = x1 + BED2_DESK_DEPTH, r["bed2"][0] + 2   # into the wardrobe, behind its doors
+    yd = top - d
+    ys = top - BEDSIDE_DEPTH
+    # They overlap by PILLAR_OVERLAP on each side of a round pillar, from the
+    # floor up to the desk through the bedside table's top.
+    ov = PILLAR_OVERLAP
+    box("Bedroom 2 Bedside Top", x1, xb + ov, ys, top, bh - t, bh, wood, col)
+    box("Bedroom 2 Bedside Side", x1, x1 + t, ys, top, 0, bh - t, wood, col)
+    # A drawer under its top, its front towards the room, up to the pillar.
+    dx0, dx1, dz = x1 + t + 0.5, xb - PILLAR_RADIUS - 1, BEDSIDE_DRAWER
+    box("Bedroom 2 Bedside Drawer Front", dx0, dx1, ys, ys + 2, bh - t - dz, bh - t - 0.5,
+        wood, col)
+    for k, part in enumerate(((dx0, dx1, ys + 2, top - 1, bh - t - dz, bh - t - dz + 1.5),
+                              (dx0, dx0 + 1.5, ys + 2, top - 1, bh - t - dz, bh - t - 2),
+                              (dx1 - 1.5, dx1, ys + 2, top - 1, bh - t - dz, bh - t - 2),
+                              (dx0, dx1, top - 2.5, top - 1, bh - t - dz, bh - t - 2))):
+        box(f"Bedroom 2 Bedside Drawer Box {k + 1}", *part, wood, col)
+    # On the bed's other side, in the corner by the top wall above the low
+    # shelf: a board at the bedside table's height.
+    box("Bedroom 2 Left Bedside Shelf", -APT_WIDTH, x0, top - BED2_LEFT_BEDSIDE, top, bh - t, bh,
+        wood, col)
+    cylinder("Bedroom 2 Desk Pillar", xb, top - BEDSIDE_DEPTH / 2, 0, dh - t, PILLAR_RADIUS,
+             wood, col)
+    box("Bedroom 2 Desk Top", xb - ov, xe, yd, top, dh - t, dh, wood, col)
+    # Bottom wall: in the left corner a square shelf, its outer corner
+    # rounded, with a black cube under it set diagonally into the corner;
+    # then a plain board along the wall towards the door, its free corner
+    # rounded. Both at the same height, fixed to the walls (no feet).
+    bd, bsh = BED2_WALL_SHELF
+    yb, xl = r["top"], -APT_WIDTH
+    xd = r["bed2_door"][0] - DOOR_FRAME_WIDTH
+    cs, cr = BED2_CORNER_SHELF
+    corner = ([(xl, yb), (xl + cs, yb)]
+              + arc(xl + cs - cr, yb + cs - cr, cr, 0, 90, steps=8) + [(xl, yb + cs)])
+    prism("Bedroom 2 Corner Shelf", corner, bsh - 2, bsh, wood, col)
+    gap, er = BED2_WALL_SHELF_END
+    x0, x1 = xl + cs, xd - gap
+    prism("Bedroom 2 Wall Shelf", [(x0, yb), (x1, yb)]
+          + arc(x1 - er, yb + bd - er, er, 0, 90, steps=8) + [(x0, yb + bd)],
+          bsh - 2, bsh, wood, col)
+    w, d, h = BED2_CORNER_CUBE
+    pivot = empty("Bedroom 2 Corner Cube", col, (xl, yb, 0), rot_z=-45)
+    box("Bedroom 2 Corner Cube Box", -w / 2, w / 2, w / 2, w / 2 + d, 0, h, mats["black"], col,
+        pivot)
 
 
 def sofa(name, x, y, rot_z, mats, col):
@@ -1231,6 +1546,10 @@ def build_layout(n, mats, col, r):
     library_x = r["closet"][0] + INT_WALL + BOOKSHELF_DEPTH   # its face towards the room
     hall_piano_y = r["hall"][0] - PIANO_FROM_BATHROOM
     p = f"L{n}"
+    if n == 9:
+        # Layout 5's furniture with bedroom 1's box (CLOSET_VARIANTS): a
+        # shorter library, the piano right under it, the corner desk under that.
+        n, library_y = 5, closet_box(r)["bottom_y"]
     if n == 1:
         # Sofa against the right wall, its end on the balcony wall; coffee
         # table in front; piano in the hall facing down; dining table against
@@ -1287,13 +1606,21 @@ def build_layout(n, mats, col, r):
             piano(f"{p} Piano", r["thick"][0], old_piano_y, -90, mats, col)
             bottom_desk(f"{p} Desk", mats, col, r)
         else:
-            # Piano right under the library (layout 7, without closet or
-            # library: 50 higher); corner desk below where layout 5's piano
-            # ends, along the bedroom wall 60 deep (layout 7: 40).
-            py = library_y + (50 if n == 7 else 0)
+            # Layout 7 (without closet or library): piano 50 higher than right
+            # under the library, the corner desk's side up to where it would
+            # end, 40 deep. Layout 5: the corner desk's side 60 deep, as long
+            # as reaches the piano right under the library, rounded down to
+            # 10; the piano centred between the library and that desk.
+            if n == 7:
+                py = library_y + 50
+                corner_desk(f"{p} Desk", mats, col, r, side_top=library_y - PIANO_WIDTH,
+                            side_depth=40)
+            else:
+                y0 = -APT_HEIGHT
+                side_top = y0 + math.floor((library_y - PIANO_WIDTH - y0) / 10) * 10
+                py = (library_y + side_top + PIANO_WIDTH) / 2
+                corner_desk(f"{p} Desk", mats, col, r, side_top=side_top, side_depth=60)
             piano(f"{p} Piano", r["thick"][0], py, -90, mats, col)
-            corner_desk(f"{p} Desk", mats, col, r, side_top=library_y - PIANO_WIDTH,
-                        side_depth=40 if n == 7 else 60)
         if n == 4:
             # Sofa as in layout 2, 30 further right.
             sx, sy = -BALCONY_WIDTH + 20 + 30, balcony_y + 40
@@ -1377,7 +1704,7 @@ def bath_b_tub(r):
     vectors along and across (up) it, half its straight length, its radius,
     its angle (degrees) and its axis' ends."""
     right, corner = r["bath"][0], (r["bath"][1], r["tub_y"][0])
-    half_l, rad = BATH_B_TUB_LENGTH / 2, BATH_B_TUB_WIDTH / 2
+    half_l, rad = BATHTUB_LENGTH / 2, BATHTUB_WIDTH / 2
     reach = BATH_B_TUB_GAP + rad
     p1 = (right - reach, -reach)
     qa, qb = p1[0] - corner[0], corner[1] - p1[1]
@@ -1409,8 +1736,7 @@ def bathroom_b(mats, col, r):
     # corner cut along the wall.
     xc = toilet_room_diagonal_x(diag, ty1 - BATH_B_CLOSET_DEPTH)
     pivot = empty("Toilet Closet", col, (xc, ty1, 0), rot_z=180)
-    cupboard("Toilet Closet", xc - xs, BATH_B_CLOSET_DEPTH, TOILET_CLOSET_HEIGHT, 1, mats, col,
-             pivot)
+    toilet_closet(xc - xs, BATH_B_CLOSET_DEPTH, 1, mats, col, pivot)
     e, inner = 5, diag["inner"]
     beyond = ([(inner[-1][0], ty1 + e)] + inner[::-1]
               + [(inner[0][0], inner[0][1] - e), (tx1 + e, inner[0][1] - e), (tx1 + e, ty1 + e)])
@@ -1427,7 +1753,7 @@ def bathroom_b(mats, col, r):
     cx, cy, u, v, seg, rad, angle = (tub[k] for k in ("cx", "cy", "u", "v", "seg", "rad",
                                                        "angle"))
     reach = BATH_B_TUB_GAP + rad
-    outline = rotated_rounded_rect(cx, cy, BATH_B_TUB_LENGTH, BATH_B_TUB_WIDTH, rad, angle)
+    outline = rotated_rounded_rect(cx, cy, BATHTUB_LENGTH, BATHTUB_WIDTH, rad, angle)
     tangent = (cx - seg * u[0] - rad, cy - seg * u[1])      # leftmost point of the tub
 
     # The shower's centre: BATH_B_SHOWER_TUB_GAP + radius below the line of
@@ -1504,7 +1830,7 @@ def bathroom_b(mats, col, r):
     prism("Bathtub Block End", [(gx, gy_end)] + arc(ex, ey, rad, a_end, 180)[:-1] + [(gx, gy)],
           0, h, block_mat, col)
     tub = prism("Bathtub", outline, 0, h + 1, mats["ceramic"], col)
-    inner = rotated_rounded_rect(cx, cy, BATH_B_TUB_LENGTH - 12, BATH_B_TUB_WIDTH - 12,
+    inner = rotated_rounded_rect(cx, cy, BATHTUB_LENGTH - 12, BATHTUB_WIDTH - 12,
                                  rad - 6, angle)
     cut(tub, prism("Bathtub Cutter", inner, 12, h + 5, mats["ceramic"], col))
     # Tap on the block, halfway along the tub's upper side, its spout over the tub.
@@ -1529,7 +1855,7 @@ def bathroom_b(mats, col, r):
     # mirror above it on the wall.
     pivot = empty("Bathroom Sink Cupboard", col, (right, r["top"], 0), rot_z=90)
     sink_cupboard("Bathroom Sink Cupboard", BATH_B_CUPBOARD_LENGTH, BATH_B_CUPBOARD_DEPTH,
-                  mats, col, pivot)
+                  mats, col, pivot, mirror_scale=BATH_MIRROR_SCALE)
 
 
 def bathroom_c(mats, col, r):
@@ -1542,26 +1868,50 @@ def bathroom_c(mats, col, r):
     right = r["bath"][0]                    # kitchen wall face
     toilet_room(mats, col, r, corner_cut=BATH_C_CORNER_CUT)
 
-    # Bathtub, its rim wider at the bottom end for the tap.
-    x0, y0 = right - BATH_C_TUB_WIDTH, -BATH_C_TUB_LENGTH
-    m, mt = TUB_RIM, TAP_RIM
+    # Bathtub along the kitchen wall, its tap coming out of that wall halfway
+    # along it, just above the rim.
+    x0, y0 = right - BATHTUB_WIDTH, -BATHTUB_LENGTH
+    m = TUB_RIM
     tub = box("Bathtub", x0, right, y0, 0, 0, BATHTUB_HEIGHT, mats["ceramic"], col)
-    cut(tub, box("Bathtub Cutter", x0 + m, right - m, y0 + mt, -m, 12, BATHTUB_HEIGHT + 5,
+    cut(tub, box("Bathtub Cutter", x0 + m, right - m, y0 + m, -m, 12, BATHTUB_HEIGHT + 5,
                  mats["ceramic"], col))
-    tap("Bathtub Tap", (x0 + right) / 2, y0 + mt, BATHTUB_HEIGHT, 180, mats, col)
+    tap("Bathtub Tap", right - 7, y0 / 2, BATHTUB_HEIGHT + 5, -90, mats, col)
+    # Between the pillar and the tub, as deep as the pillar: two steps,
+    # BATH_C_STEPS high, the lower one on the bathroom side, each half of it.
+    block_mat = principled("Bathtub Block", hex_color(BATH_B_TUB_BLOCK_COLOR), 0.6)[0]
+    px, py = r["bath"][1], r["tub_y"][0]            # pillar's corner in the bathroom
+    ym = py / 2
+    for k, (a, c) in enumerate(((py, ym), (ym, 0))):
+        box(f"Bathtub Step {k + 1}", px, x0, a, c, 0, BATH_C_STEPS[k], block_mat, col)
     pivot = empty("Bathroom Cupboard", col, (right, r["top"], 0), rot_z=90)
     sink_cupboard("Bathroom Cupboard", y0 - r["top"], BATH_CUPBOARD_DEPTH, mats, col, pivot,
-                  height=BATH_CUPBOARD_HEIGHT, doors=3)
+                  height=BATH_CUPBOARD_HEIGHT, doors=3, mirror_scale=BATH_MIRROR_SCALE)
 
-    # Shower glass across the niche's opening, flush with the bathroom side of
-    # the wall below it, from the pillar down.
-    gx, (gy1, gy0) = r["bath"][1], r["tub_y"]
+    # Shower glass across the niche's opening, BATH_C_GLASS_SHIFT left of the
+    # bathroom side of the wall below it, from the pillar down.
+    gx, (gy1, gy0) = r["bath"][1] - BATH_C_GLASS_SHIFT, r["tub_y"]
     gy0 += BATH_C_SHOWER_OPENING
     box("Shower Glass", gx - 1, gx, gy0, gy1, 0, GLASS_WALL_HEIGHT, mats["clear_glass"], col)
     box("Shower Glass Edge", gx - 1.5, gx + 0.5, gy0, gy0 + 1, 0, GLASS_WALL_HEIGHT,
         mats["metal"], col)
+    # Towel rack on the glass' bathroom side, centred on it, nearly as long:
+    # a bar on two stand-offs.
+    metal, (rm, rz, ro) = mats["metal"], TOWEL_RACK
+    ym, rl = (gy0 + gy1) / 2, gy1 - gy0 - 2 * rm
+    box("Towel Rack Bar", gx + ro - 1, gx + ro + 1, ym - rl / 2, ym + rl / 2, rz - 1, rz + 1,
+        metal, col)
+    for k, y in enumerate((ym - rl / 2 + 3, ym + rl / 2 - 3)):
+        box(f"Towel Rack Stand {k + 1}", gx, gx + ro, y - 1, y + 1, rz - 1, rz + 1, metal, col)
     # Shower head on the pillar, the niche's top wall, centred on it.
     shower_head("Shower", (r["tub_x"][0] + r["tub_x"][1]) / 2, gy1, 90, SHOWER_ARM, mats, col)
+    # Nook for bottles in the shower's bottom wall (the toilet room's top
+    # wall), centred on its straight part.
+    nw, nh, nd, nz = SHAMPOO_NOOK
+    wall_obj = next(o for o in col.objects if o.name.startswith("Wall Toilet Top"))
+    xc = (r["tub_x"][1] + r["bath"][1] - BATH_C_CORNER_CUT - INT_WALL) / 2
+    yf = r["toilet_y"][0] + INT_WALL                     # the wall's shower face
+    cut(wall_obj, box("Shampoo Nook Cutter", xc - nw / 2, xc + nw / 2, yf - nd, yf + 1, nz,
+                      nz + nh, mats["wall"], col))
 
     # Toilet room.
     (tx1, tx0), (ty1, ty0) = r["toilet"], r["toilet_y"]
@@ -1574,8 +1924,7 @@ def bathroom_c(mats, col, r):
     (xt, yt), _ = toilet_corner_inner(r, BATH_C_CORNER_CUT)
     xc = min(tx1, xt + yt - (ty1 - BATH_C_CLOSET_DEPTH))
     pivot = empty("Toilet Closet", col, (xc, ty1, 0), rot_z=180)
-    cupboard("Toilet Closet", xc - xs, BATH_C_CLOSET_DEPTH, TOILET_CLOSET_HEIGHT, 2,
-             mats, col, pivot)
+    toilet_closet(xc - xs, BATH_C_CLOSET_DEPTH, 2, mats, col, pivot)
     for part in list(pivot.children):
         cut(part, toilet_corner_cutter(f"{part.name} Cutter", mats, col, r, BATH_C_CORNER_CUT))
 
@@ -1593,7 +1942,9 @@ def build_furniture(mats, col):
     for name, build in (("a", bathroom_a), ("b", bathroom_b), ("c", bathroom_c)):
         bath_col = collection(f"Bathroom {name}")
         build(mats, bath_col, bathroom_rooms(r, name))
-        bpy.context.view_layer.layer_collection.children[bath_col.name].exclude = name != "a"
+        layer = bpy.context.view_layer.layer_collection.children[bath_col.name]
+        layer.children[f"{bath_col.name} Doors Open"].exclude = True   # doors closed
+        layer.exclude = name != "a"
     build_beds(mats, col, r)
 
 

@@ -1,4 +1,4 @@
-svg_plan.py generates SVG plans of the kitchen (todo.txt) into plans/, one file per wall (left, top, right) and color set: kitchen_<wall>_colors<N>.svg. `make plans` regenerates them; `make plan-blend` builds kitchen_plan.blend (see the end). It also draws the whole apartment from the 3D scene, one floor plan per furniture layout N and bathroom layout b (plans/apartment_layout<N><b>.svg, needs Blender; bathroom a: bathtub in the niche, b: from bathroom2.svg, c: shower in the niche, bathtub along the kitchen wall and a taller toilet room with a sink); the layouts are defined in apartment.py (build_layout) and are separate collections in the Blender files, layout 1 shown. Bedroom 1's closet with the library is its own collection ("Bedroom 1 Closet", layouts 1-5); layouts 6, 7 and 8 use "No Closet" instead (a thin wall above the thick one, flush with the bedroom).
+svg_plan.py generates SVG plans of the kitchen (todo.txt) into plans/, one file per wall (left, top, right) and color set: kitchen_<wall>_colors<N>.svg. `make plans` regenerates them; `make plan-blend` builds kitchen_plan.blend (see the end). It also draws the whole apartment from the 3D scene, one floor plan per furniture layout N and bathroom layout b (plans/apartment_layout<N><b>.svg, needs Blender; bathroom a: bathtub in the niche, b: from bathroom2.svg, c: shower in the niche, bathtub along the kitchen wall and a taller toilet room with a sink); the layouts are defined in apartment.py (build_layout) and are separate collections in the Blender files (which one shows on opening: see the end). Bedroom 1's closet with the library is its own collection ("Bedroom 1 Closet", layouts 1-5); layouts 6, 7 and 8 use "No Closet" instead (a thin wall above the thick one, flush with the bedroom); layout 9 (layout 5's furniture) uses "Bedroom 1 Box": the thin wall, an empty box in the corner, 40 deep and 70 long inside, closed by 2 thick light wood planks, the library around it (shorter, the piano right under it, the corner desk under the piano), and below a plank flush with the thick wall's face, empty behind.
 
 Each plan has 3 views sharing the same horizontal axis, everything in cm:
 - top view: seen from above, mostly the upper cabinets and the slab under them.
@@ -29,23 +29,26 @@ Left plan, right to left (s = 0 at the top wall, wall 348.1 long):
 - 1. Column 100 wide, 35 deep, 5 of wood on each side: open 20 | cabinet up to 120 with 2 doors, shelves ~20 apart | open 40 | top cabinet up to the ceiling (top rule) with 2 doors, 1 shelf.
 - 2. Column 45 wide, 60 deep: larder 180 high and a cabinet above up to the ceiling, each with its own door (KL2d1a, KL2d2a) hinged on the right, handle gap on its left. 5 pull-out shelves (35 wide, centred, 55 deep) on a 5 wide vertical bar at the back; 5 door shelves (15 deep) at the same heights, none in the top cabinet. Shelves are 15 high dark grey rectangles (door shelves a little brighter) with black lines for a 2 thick bottom bar and side bars.
 - 3. Tower 60 wide, 60 deep: cabinet up to 55 with 2 doors, 1 shelf | 45 high cabinet with a flap door opening down, a 50x25 shiny black microwave 2 above its bottom, right behind the flap and a shelf 30 above its bottom | 60 high cabinet with an oven (shiny black) | top cabinet up to the ceiling with 2 doors, 2 shelves.
-- 4. Lower cabinet 60 with 3 drawers; upper cabinet 60 with 2 doors.
-- 5. Lower cabinet 50, one door.
-- Stone slab over both lower cabinets.
+- 4. Lower cabinet 80 with 3 drawers; upper cabinet 60 with 2 doors.
+- Stone slab over the drawers up to the table.
 - 3 upper shelves from upper cabinet 4, medium light wood like the table, 5 thick, 35 deep, free front corner rounded r 10: all reaching the end of the wall (83.1 long); the lowest at 158, the top one's surface at 220, the middle one halfway.
-- Plank table, medium light wood, 5 thick, 60 wide, 120 long: short side against the wall, on the slab, flush with the end of the wall; a black metal foot centred on the 60, 30 from the outer end.
+- Plank table, medium light wood, 5 thick, 60 wide, 120 long: short side against the wall, at the slab's height, flush with the end of the wall. Under it, cabinets facing the living room (the end of the wall), their fronts 10 back from the table's edge, shown on a page of their own (plans/kitchen_table_colors<N>.svg: the table seen from the living room, widths, heights, color legend):
+  - 5. From the wall, 50 wide, back against the drawer cabinet: no bottom (room on the floor), a shelf at 40 behind a door (KLB5d2a), open below.
+  - 6. Next to it, 50 wide, 10 back from both sides of the table: one door (KLB6da), one shelf.
+  - Then a 10 piece with its two outer corners rounded (r 10): the end of the table's foot, colored like the drawers beside it (KLB4da); the table overhangs it by 10.
+  - The table's two free corners are cut at 45 degrees, 10 x 10.
 
 Top plan, left to right (s = 0 at the right wall, 25 thick, IDs KT...):
-- A vertical glass, 1 thick, closes the left side of the space between the lower and upper cabinets (at the stove cabinet's left end). Its outline seen from the side: 80 deep at the bottom (like the lower cabinet), 50 deep at the top (like the upper cabinets); its front edge goes 45 degrees down from the top, then straight down to the slab.
-- 1. Lower cabinet 80 wide, 80 deep, 2 horizontal drawers; a 60x60 shiny black stove 20 from its left, centred in depth.
-  Above it a 90 wide extractor (15 thick black rectangle, 50 deep) centred on the stove. Upper cabinets 50 deep, 105 wide (extending to the right), sitting right on the extractor (15 higher than normal): 40 cabinet with 2 doors | 20 gap centred on the extractor (pipe) | 40 cabinet with 2 doors | 5 gap; both gaps covered with wood.
+- A vertical glass, 1 thick, closes the left side of the space between the lower and upper cabinets (at the stove cabinet's left end). Its outline seen from the side: 60 deep at the bottom (like the lower cabinet), 35 deep at the top (like the upper cabinets); its front edge goes 45 degrees down from the top, then straight down to the slab.
+- 1. Lower cabinet 80 wide, 60 deep, 2 horizontal drawers; a 73 x 43 shiny black stove, centred between the cabinet's left end and the wall section (over the dead corner on the right), and in depth.
+  Above it a 70 wide extractor (15 thick black rectangle, 40.5 deep) centred on the stove. Upper cabinets 35 deep, sitting right on the extractor (15 higher than normal), from the left: 5 gap | 40 cabinet | 20 gap centred on the extractor (pipe) | 40 cabinet, up to the right wall's uppers; both gaps covered with wood.
 - The two 40 upper cabinets have one door each reaching the ceiling (top rule, hinged on their outer side), 2 shelves each, no high cabinet; a fake c2 door (KTT1f, never opens) covers the pipe gap, wood covers the 5 gap.
 - The right wall's cabinets, cut (dark grey, standard sizes: lower 60, upper 35). The slab is not greyed and runs over them up to a 30 wide wall section (wall cut, 70 deep from the top wall) against the right wall.
 - Wall cut.
 
 Right plan, from left to right:
 - wall cut
-- cuts from from the top plan: 80 of lower cabinet, 50 of upper cabinet, 70 in-between for that corner nodge
+- cuts from the top plan: 60 of lower cabinet (its first cabinet still starts at 80, past a dead corner under the slab), 35 of upper cabinet, 70 in-between for that corner nodge
 - 1. 35 large lower cabinet, 35 large, pull-out shelves too, 2 shelves only, adapt the rest to its size. upper cabinet 50 large with 2 doors, 5cm left of it is unused and covered.
 - 2. 90 large lower cabinet with 2 doors, on top a 90 large and 50 deep matte almost black sink: a 2 thick rim and two rectangular bowls 20 deep, set into the slab. 70 large upper cabinet with 2 doors, has no bottom frame (left and right frame reach the bottom still)
 - 3. 60 large dishwasher (black rectangle). 70 large upper cabinet wuth 2 doors.
@@ -65,7 +68,7 @@ We define 4 colors from bright to brightest c1 to darkest c4. a sample with the 
 - KLB4da, KLB4db: c3
 - KLB4dc: c2
 - KLT4d: c1
-- KLB5d: c2
+- KLB5d, KLB6d: c1
 
 - KTB1da: c4
 - KTB1db: c3
@@ -97,4 +100,9 @@ Color set 2:
 - c3: #456455 labeled LL2272
 - c4: #23343e labeled LL2268
 
-Blender view (`blender -b --python svg_plan.py -- --blend kitchen_plan.blend`): the apartment from apartment.py, with the kitchen built from the three plans in 3D; the 30 x 70 corner section applies to the whole apartment. Plan-only parts (cuts, top-view footprints, parts drawn in two plans) are left out. Door and drawer fronts, with the door shelves that hang on them, are copied in one collection per combination of closed/open and color set ("Kitchen Fronts Closed colors1"...); open doors are at 90 degrees (KLB5da, under the table, only 80), the flap down; drawers stay in, their front removed to show the drawer box. Only the closed set 1 is shown by default. The walls outside the kitchen are not painted (all white). A curtain closes off the entrance and KL1: from the front corner of KL2's side, parallel to the top wall, then along KT1's left side to its front corner; it hangs from a rail at the ceiling down to 100 from the floor, in 10 wide grey bands (two greys). The entrance door is open 95 degrees; the plank table has a wood grain like the other wood parts.
+Color set 3 (by position, not c1-c4):
+- bottom cabinets' fronts (IDs K?B...), the two cabinets under the oven (KL3d1, KL3d2) the larder door and the door above it (KL2d): #6c7570 labeled LL2266
+- every other front (including the doors under the table, KLB5 and KLB6), and the 3 upper shelves: #fffef6 labeled LL2251
+- stone slab, plank table and backsplash (the wall between the slab and the upper cabinets, on all three walls): the stone texture textures/BQ8583.jpg (one image covers 40 cm), also shown in the legend.
+
+Blender view (`blender -b --python svg_plan.py -- --blend kitchen_plan.blend`): the apartment from apartment.py, with the kitchen built from the three plans in 3D; the 30 x 70 corner section applies to the whole apartment. Plan-only parts (cuts, top-view footprints, parts drawn in two plans) are left out. Door and drawer fronts, with the door shelves that hang on them, are copied in one collection per combination of closed/open and color set ("Kitchen Fronts Closed colors1"...); open doors are at 90 degrees (the doors under the table stay closed), the flap down; drawers stay in, their front removed to show the drawer box. The slab, the plank table, the backsplash and the upper shelves are in those groups too, as their look follows the color set. The saved file opens on layout 9, bathroom c and the closed set 3, measures hidden (SHOWN_* in svg_plan.py). The walls outside the kitchen are not painted (all white). A curtain closes off the entrance and KL1: from the front corner of KL2's side, parallel to the top wall, then along KT1's left side to its front corner; it hangs from a rail at the ceiling down to 100 from the floor, in 10 wide grey bands (two greys). The entrance door is open 95 degrees; the plank table has a wood grain like the other wood parts (stone in set 3).

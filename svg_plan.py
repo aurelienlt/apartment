@@ -5,7 +5,8 @@ Usage:
     blender -b --python svg_plan.py -- --blend kitchen_plan.blend
     blender -b --python svg_plan.py -- --apartment-svgs plans
 
-Writes plans/kitchen_<wall>_colors<N>.svg for every wall and color set; inside
+Writes plans/kitchen_<wall>_colors<N>.svg for every wall and color set, and
+plans/kitchen_table_colors<N>.svg for the bar table seen from the living room; inside
 Blender, builds the apartment (apartment.py) with this kitchen, or draws its
 floor plan for every furniture layout.
 
@@ -62,7 +63,9 @@ COLORS = {
     "struct": "#ffffff",      # every wood structure
     "front": "#e3d3b0",       # default door / drawer front (beige)
     "slab": "#f3f1ec",        # white stone
-    "plank": "#c9a26b",       # medium light wood
+    "plank": "#c9a26b",       # medium light wood: the shelves...
+    "table": "#c9a26b",       # ...and the plank table
+    "foot": "#e3d3b0",        # the table foot's end (see FOOT_LIKE)
     "metal": "#1e1e1e",       # black metal
     "basket": "#5a5a5a",      # pull-out shelves (black bars on top)...
     "door_basket": "#7a7a7a", # ...door shelves, a little brighter...
@@ -83,14 +86,27 @@ COLOR_SETS = {
         "c3": ("#a48277", "LL2257"), "c4": ("#4d261f", "LL2270")},
     2: {"c1": ("#efeee8", "LL2275"), "c2": ("#849897", "LL2261"),
         "c3": ("#456455", "LL2272"), "c4": ("#23343e", "LL2268")},
+    # By position instead of c1..c4: bottom cabinets' fronts, every other front.
+    3: {"bottom": ("#6c7570", "LL2266"), "other": ("#fffef6", "LL2251")},
 }
+# Sets whose stone slab, plank table and backsplash use a stone texture
+# (image path from this file's folder, and the size in cm one image covers).
+SURFACE_TEXTURES = {3: ("textures/BQ8583.jpg", "BQ8583")}
+SURFACE_KINDS = ("slab", "table", "backsplash")
+# Box kinds whose look depends on the color set: those, and the wooden
+# shelves, painted like the other fronts in a set by position.
+SET_KINDS = SURFACE_KINDS + ("plank", "foot")
+# The table foot's end takes this front's color (the drawers beside it).
+FOOT_LIKE = "KLB4da"
+TABLE_CORNER_CUT = 10             # the table's two free corners cut at 45 degrees
+TEXTURE_SIZE = 40
 COLOR_SET = 1                 # the set being drawn
 # Which color each front gets, by ID prefix (the longest matching prefix
 # wins); fronts matching nothing use COLORS["front"].
 FRONT_PALETTE = {
     "KL1d2": "c3", "KL1d4": "c2", "KL2d": "c4", "KL3d1a": "c4",
     "KL3d1b": "c3", "KL3d2a": "c3", "KL3d4a": "c3", "KL3d4b": "c2",
-    "KLB4da": "c3", "KLB4db": "c3", "KLB4dc": "c2", "KLT4d": "c1", "KLB5d": "c2",
+    "KLB4da": "c3", "KLB4db": "c3", "KLB4dc": "c2", "KLT4d": "c1", "KLB5d": "c1", "KLB6d": "c1",
     "KTB1d": "c3", "KTB1da": "c4", "KTT1da": "c3", "KTT1f": "c2", "KTT1db": "c1",
     "KRB1d": "c3", "KRB2da": "c3", "KRB2db": "c4", "KRT3db": "c4",
     "KRT3da": "c3", "KRT2db": "c2", "KRT1d": "c1", "KRT2da": "c1",
@@ -104,10 +120,47 @@ def palette_key(fid):
     return FRONT_PALETTE[max(matches, key=len)] if matches else None
 
 
+# Sets by position: fronts colored like the bottom cabinets' besides theirs
+# (the two cabinets under the oven, the larder door next to them and the
+# door above it).
+BOTTOM_LIKE = ("KL3d1", "KL3d2", "KL2d")
+# ...and bottom cabinets' fronts colored like the others (the doors under the table).
+OTHER_LIKE = ("KLB5", "KLB6")
+
+
+def front_key(fid, n):
+    """Key of front fid in color set n: c1..c4 from FRONT_PALETTE, or for a
+    set by position "bottom" (bottom cabinets, IDs K?B..., and BOTTOM_LIKE)
+    and "other" (also OTHER_LIKE)."""
+    if "bottom" in COLOR_SETS[n]:
+        bottom = ((re.match(r"K[LTR]B", fid) and not fid.startswith(OTHER_LIKE))
+                  or fid.startswith(BOTTOM_LIKE))
+        return "bottom" if bottom else "other"
+    return palette_key(fid)
+
+
 def front_color(fid):
-    key = palette_key(fid)
+    key = front_key(fid, COLOR_SET)
     colors = COLOR_SETS[COLOR_SET]
     return colors[key][0] if key in colors else COLORS["front"]
+
+
+def texture_path(n):
+    """Absolute path of color set n's surface texture, or None."""
+    if n not in SURFACE_TEXTURES:
+        return None
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), SURFACE_TEXTURES[n][0])
+
+
+def kind_fill(kind):
+    """SVG fill of a box kind in the current color set."""
+    if kind in SURFACE_KINDS and COLOR_SET in SURFACE_TEXTURES:
+        return "url(#surface)"
+    if kind == "plank" and "other" in COLOR_SETS[COLOR_SET]:
+        return COLOR_SETS[COLOR_SET]["other"][0]
+    if kind == "foot":
+        return front_color(FOOT_LIKE)
+    return COLORS[kind]
 # What each compartment holds, by key "<cabinet ID>/<stack>" (e.g. "KL1/2");
 # anything missing gets a description of its structure.
 CONTENTS = {}
@@ -154,6 +207,10 @@ class Plan:
     compartments: list = field(default_factory=list)
     width_marks: list = field(default_factory=list)   # s positions for the width chain
     extra_dims: list = field(default_factory=list)    # (view, axis, a0, a1, at)
+    # Extra elevation of things facing along the wall: (title, items, marks,
+    # heights), items (kind, d0, d1, z0, z1, front ID or None), marks the d
+    # positions for its width chain, heights the z ones for its height chain.
+    end_view: tuple = None
 
     def add(self, kind, s0, s1, d0, d1, z0, z1, views=("front", "open"), **kw):
         self.boxes.append(Box(min(s0, s1), max(s0, s1), min(d0, d1), max(d0, d1),
@@ -386,16 +443,18 @@ def build_left():
     b.doors("KL3", s0, s1, d, 160 + HANDLE, CEILING - TOP_FRONT_GAP, 2, stack=4)
     b.compartment("KL3", 4, s0, s1, 160, CEILING, "2 shelves")
 
-    # 4. Lower cabinet 60 with 3 drawers; upper cabinet 60 with 2 doors.
-    b.lower(4, 205, 265, ("drawers", 3))
+    # 4. Lower cabinet 80 with 3 drawers; upper cabinet 60 with 2 doors.
+    b.lower(4, 205, 285, ("drawers", 3))
     b.upper(4, 205, 265)
 
-    # 5. Lower cabinet 50, one door hinged on the left.
-    b.lower(5, 265, 315, ("doors", 1, ["left"], 1))
+    # Plank table: 60 wide, 120 long, 5 thick, at the slab's height, flush
+    # with the end of the wall, on the cabinets below.
+    width, long = 60, 120
+    p0, p1 = LEFT_WALL_LENGTH - width, LEFT_WALL_LENGTH
 
-    # Stone slab over both lower cabinets, and the wall above it.
-    add("slab", 205, 315, 0, LOWER_DEPTH, SLAB_BOTTOM, SLAB_TOP, views=("top", "front", "open"))
-    add("backsplash", 205, 315, 0, 0.5, SLAB_TOP, UPPER_BOTTOM)
+    # Stone slab over the drawers up to the table, and the wall above them.
+    add("slab", 205, p0, 0, LOWER_DEPTH, SLAB_BOTTOM, SLAB_TOP, views=("top", "front", "open"))
+    add("backsplash", 205, LEFT_WALL_LENGTH, 0, 0.5, SLAB_TOP, UPPER_BOTTOM)   # to the wall's end
 
     # Three 5 cm upper shelves from upper cabinet 4 to the end of the wall:
     # the lowest at the bottom of the uppers, the top one's surface at
@@ -408,17 +467,67 @@ def build_left():
             outline=rounded_rect(start, end, 0, UPPER_DEPTH, 10))
         p.extra_dims.append(("front", "s", start, end, z + 9))
 
-    # Plank table: 60 wide, 120 long, 5 thick, on the slab, flush with the end
-    # of the wall; a black metal foot centred on the 60, 30 from the outer end.
-    width, long = 60, 120
-    p0, p1 = LEFT_WALL_LENGTH - width, LEFT_WALL_LENGTH
-    fs, fd = (p0 + p1) / 2, long - 30
-    add("plank", p0, p1, 0, long, SLAB_TOP, SLAB_TOP + 5, views=("top", "front", "open"))
-    add("metal", fs - 2, fs + 2, fd - 2, fd + 2, 0, SLAB_TOP, views=("top", "front", "open"))
-    p.extra_dims += [("top", "d", 0, long, p1 - 8), ("top", "d", fd, long, fs + 6),
-                     ("top", "s", p0, fs, fd), ("front", "s", p0, fs, 45)]
+    c = TABLE_CORNER_CUT
+    add("table", p0, p1, 0, long, SLAB_TOP, SLAB_TOP + 5, views=("top", "front", "open"),
+        outline=[(p0, 0), (p1, 0), (p1, long - c), (p1 - c, long), (p0 + c, long),
+                 (p0, long - c)])
 
-    p.width_marks = [0, 100, 145, 205, 265, 315, LEFT_WALL_LENGTH]
+    # Under the table, two cabinets facing the end of the wall (the living
+    # room), their fronts 10 back from the table's edge, then a 10 piece with
+    # its outer corners rounded: the table's foot.
+    t, views = BOARD, ("top", "front", "open")
+    front = p1 - 10                                     # face of the doors
+    # Their doors are drawn in the table's end view only (fixed: shown closed).
+    end = [("table", 0, long, SLAB_TOP, SLAB_TOP + 5, None)]
+    # 5. From the wall, 50 wide, back against the drawer cabinet (under the
+    #    slab there, so lower): no bottom (room on the floor), a shelf at 40
+    #    behind a door, open below it.
+    d0, d1, back = 0, 50, 285
+    for a, c in ((d0, d0 + t), (d1 - t, d1)):
+        add("struct", back, p0, a, c, 0, SLAB_BOTTOM, views=views)
+        add("struct", p0, front - t, a, c, 0, SLAB_TOP, views=views)
+        end.append(("struct", a, c, 0, SLAB_TOP, None))
+    add("struct", back, back + t, d0 + t, d1 - t, 0, SLAB_BOTTOM, views=views)
+    add("struct", p0, front - t, d0 + t, d1 - t, SLAB_TOP - t, SLAB_TOP, views=views)
+    add("struct", back + t, front - t, d0 + t, d1 - t, 40 - t, 40, views=views)
+    add("front", front - t, front, d0 + GAP, d1 - GAP, 40 + GAP, SLAB_TOP - HANDLE,
+        views=(), front=dict(id="KLB5d2a", hinge="fixed"))
+    end += [("wall", d0 + t, d1 - t, 0, 40 - t, None), ("struct", d0 + t, d1 - t, 40 - t, 40, None),
+            ("struct", d0 + t, d1 - t, SLAB_TOP - t, SLAB_TOP, None),
+            ("front", d0 + GAP, d1 - GAP, 40 + GAP, SLAB_TOP - HANDLE, "KLB5d2a")]
+    # 6. Next to it, 50 wide, 10 back from both sides of the table: one door,
+    #    a shelf inside.
+    d0, d1, back = 50, 100, p0 + 10
+    for a, c in ((d0, d0 + t), (d1 - t, d1)):
+        add("struct", back, front - t, a, c, 0, SLAB_TOP, views=views)
+    add("struct", back, back + t, d0 + t, d1 - t, 0, SLAB_TOP, views=views)
+    for z in (0, SLAB_TOP / 2 - t / 2, SLAB_TOP - t):
+        add("struct", back + t, front - t, d0 + t, d1 - t, z, z + t, views=views)
+    add("front", front - t, front, d0 + GAP, d1 - GAP, GAP, SLAB_TOP - HANDLE,
+        views=(), front=dict(id="KLB6da", hinge="fixed"))
+    end += [("struct", d0, d1, 0, SLAB_TOP, None),
+            ("front", d0 + GAP, d1 - GAP, GAP, SLAB_TOP - HANDLE, "KLB6da")]
+    # Filler in the corner left between the drawer cabinet (60 deep), cabinet
+    # 5 (50) and cabinet 6's back: under the slab, then under the table.
+    add("struct", 285, p0, 50, LOWER_DEPTH, 0, SLAB_BOTTOM, views=views)
+    add("struct", p0, back, 50, LOWER_DEPTH, 0, SLAB_TOP, views=views)
+    # The foot's end: 10 thick, as wide as cabinet 6, outer corners rounded.
+    r, e0, e1 = 10, d1, d1 + 10
+    end_outline = ([(back, e0), (front, e0)]
+           + [(front - r + r * math.cos(math.radians(9 * k)), e0 + r * math.sin(math.radians(9 * k)))
+              for k in range(11)]
+           + [(back + r + r * math.cos(math.radians(90 + 9 * k)),
+               e0 + r * math.sin(math.radians(90 + 9 * k))) for k in range(11)])
+    add("foot", back, front, e0, e1, 0, SLAB_TOP, views=views, outline=end_outline)
+    end.append(("foot", e0, e1, 0, SLAB_TOP, None))
+    p.end_view = ("Table end view (from the living room)", end, [0, 50, 100, 110, long],
+                  [0, 40, SLAB_TOP, SLAB_TOP + 5])
+    p.extra_dims += [("top", "d", 0, long, p1 - 4), ("top", "d", 0, 50, front - 6),
+                     ("top", "d", 50, 100, front - 6), ("top", "d", 100, 110, front - 6),
+                     ("top", "s", 285, front, 25), ("top", "s", p0 + 10, front, 75),
+                     ("top", "s", front, p1, 115)]
+
+    p.width_marks = [0, 100, 145, 205, 285, LEFT_WALL_LENGTH]
     p.extra_dims += [("top", "d", 0, 35, 50), ("top", "d", 0, 60, 122), ("top", "d", 0, 60, 175),
                      ("top", "d", 0, 35, 230), ("top", "d", 0, 60, 252)]
     return p
@@ -429,7 +538,9 @@ def build_left():
 TOP_DENT_WIDTH = 30               # wall section between the right wall and its cabinets
 TOP_DENT_DEPTH = 70               # how far it reaches from the top wall (the right
                                   # plan's corner section)
-TOP_UPPER_DEPTH = 50              # upper cabinets above the extractor
+TOP_UPPER_DEPTH = UPPER_DEPTH     # upper cabinets above the extractor
+STOVE = 73, 43                    # width, depth
+HOOD = 70, 40.5                   # extractor: width, depth
 
 
 def build_top():
@@ -449,31 +560,39 @@ def build_top():
     add("cut", dent, cut_upper, 0, 999, UPPER_BOTTOM + HANDLE, CEILING)   # upper + high
     add("struct", dent, cut_upper, 0, 110, 0, CEILING, views=("top",), in3d=False)   # seen from above
     add("struct", 0, dent, TOP_DENT_DEPTH, 110, 0, CEILING, views=("top",), in3d=False)
+    # In 3D, wood filling the gap between the wall section and both walls'
+    # upper cabinets (the right wall's start past the section).
+    add("struct", dent, cut_upper, 0, TOP_DENT_DEPTH, UPPER_BOTTOM, CEILING, views=())
 
-    # 1. Lower cabinet 80 wide, 80 deep, 2 drawers, a 60x60 stove 20 from its
-    #    left, centred in depth.
+    # 1. Lower cabinet 80 wide, 60 deep, 2 drawers; the stove centred between
+    #    its left end and the wall section (over the dead corner beside it),
+    #    and in depth.
     s0, s1 = cut_lower, length
-    b.lower(1, s0, s1, ("drawers", 2), depth=80)
-    add("slab", s0, s1, 0, 80, SLAB_BOTTOM, SLAB_TOP, views=views)
+    b.lower(1, s0, s1, ("drawers", 2))
+    add("slab", s0, s1, 0, LOWER_DEPTH, SLAB_BOTTOM, SLAB_TOP, views=views)
     add("slab", dent, s0, 0, 110, SLAB_BOTTOM, SLAB_TOP, views=views,   # right run's slab
         in3d=False)
     add("slab", 0, dent, TOP_DENT_DEPTH, 110, SLAB_BOTTOM, SLAB_TOP, views=("top",), in3d=False)
-    stove1 = s1 - 20
-    stove0 = stove1 - 60
-    add("appliance", stove0, stove1, 10, 70, SLAB_TOP, SLAB_TOP + 1, views=views)
+    (sw, sd), (hw, hd) = STOVE, HOOD
+    sc = (dent + s1) / 2
+    stove0, stove1 = sc - sw / 2, sc + sw / 2
+    sd0 = (LOWER_DEPTH - sd) / 2
+    add("appliance", stove0, stove1, sd0, sd0 + sd, SLAB_TOP, SLAB_TOP + 1, views=views)
 
-    # Extractor hood 90 wide, 15 thick, centred on the stove, right under the
-    # upper cabinets (raised by as much).
-    sc = (stove0 + stove1) / 2
+    # Extractor hood, 15 thick, centred on the stove, right under the upper
+    # cabinets (raised by as much).
     hood_z1 = UPPER_BOTTOM + 15
-    add("metal", sc - 45, sc + 45, 0, 50, UPPER_BOTTOM, hood_z1, views=views)
+    add("metal", sc - hw / 2, sc + hw / 2, 0, hd, UPPER_BOTTOM, hood_z1, views=views)
+    # The wall above the slab: up to the right wall's cut upper cabinets
+    # beside the wall section, then up to the raised upper cabinets.
+    add("backsplash", dent, cut_upper, 0, 0.5, SLAB_TOP, UPPER_BOTTOM)
+    add("backsplash", cut_upper, length, 0, 0.5, SLAB_TOP, hood_z1)
 
-    # Upper, 50 deep, 105 wide from the cabinet's left: 40 cabinet | 20 pipe
-    # gap (centred on the hood) | 40 cabinet | 5 unused; the gaps are covered
-    # with wood.
+    # Upper, from the cabinet's left: 5 unused | 40 cabinet | 20 pipe gap
+    # (centred on the hood) | 40 cabinet, up to the right wall's uppers; the
+    # gaps are covered with wood.
     d = TOP_UPPER_DEPTH
     u1 = length
-    u0 = u1 - 105
     p0, p1 = sc - 10, sc + 10
     # One door each, up to the ceiling, hinged on its outer side; 2 shelves.
     b.upper(1, p1, u1, doors=1, shelves=2, bottom=hood_z1, depth=d, top=CEILING,
@@ -481,32 +600,35 @@ def build_top():
     b.upper(1, p0 - 40, p0, doors=1, shelves=2, bottom=hood_z1, first=1, depth=d,
             top=CEILING, hinges=["right"])
     add("metal", sc - 6, sc + 6, 0, 12, hood_z1, CEILING)
-    for g0, g1 in ((p0, p1), (u0, p0 - 40)):
+    for g0, g1 in ((p0, p1), (p1 + 40, u1)):
         b.footprint(g0, g1, d, CEILING)
     # A fake door in front of the pipe, matching the doors beside it, under
     # the ceiling plank; wood covering the 5 gap.
     add("front", p0 + GAP, p1 - GAP, d - BOARD, d, hood_z1, CEILING - TOP_FRONT_GAP,
         front=dict(id="KTT1f", hinge="fixed"))
     add("struct", p0, p1, d - 2 * BOARD, d - BOARD, CEILING - TOP_PLANK, CEILING)
-    add("struct", u0, p0 - 40, d - BOARD, d, hood_z1, CEILING)
+    add("struct", p1 + 40, u1, d - BOARD, d, hood_z1, CEILING)
 
     # Vertical glass on the left side of the cooking space, 1 thick, from the
     # slab to the upper cabinets: as deep as the lower cabinet at the bottom
     # and the upper cabinet at the top, its front edge going 45 degrees from
     # the top, then straight down.
-    g_top, g_base = d, 80
+    g_top, g_base = d, LOWER_DEPTH
     bend = hood_z1 - (g_base - g_top)
     add("glass", s1 - 1, s1, 0, g_base, SLAB_TOP, hood_z1, views=views,
         profile=[(0, hood_z1), (g_top, hood_z1), (g_base, bend), (g_base, SLAB_TOP),
                  (0, SLAB_TOP)])
 
     p.width_marks = [0, dent, cut_lower, length]
-    upper_marks = [0, dent, cut_upper, u0 + 5, p0, p1, u1]
+    upper_marks = [0, dent, cut_upper, p0, p1, p1 + 40, u1]
     p.extra_dims += [("front", "s", a, c, CEILING + 4)
                      for a, c in zip(upper_marks, upper_marks[1:])]
-    p.extra_dims += [("front", "s", sc - 45, sc + 45, UPPER_BOTTOM - 4),
-                     ("top", "s", stove1, s1, 76), ("top", "s", stove0, stove1, 76),
-                     ("top", "d", 0, d, stove0 - 4), ("top", "d", 0, 80, s1 + 6),
+    p.extra_dims += [("front", "s", sc - hw / 2, sc + hw / 2, UPPER_BOTTOM - 4),
+                     ("top", "s", stove1, s1, LOWER_DEPTH + 4),
+                     ("top", "s", stove0, stove1, LOWER_DEPTH + 4),
+                     ("top", "s", dent, stove0, LOWER_DEPTH + 4),
+                     ("top", "d", sd0, sd0 + sd, stove0 + 4), ("top", "d", 0, hd, sc),
+                     ("top", "d", 0, LOWER_DEPTH, s1 + 6),
                      ("top", "d", 0, TOP_DENT_DEPTH, dent / 2)]
     return p
 
@@ -541,9 +663,10 @@ def build_right():
     # Positions below run left to right from the top wall; s = length - pos.
     lower = [("pull-out", 35), ("sink", 90), ("dishwasher", 60)]
     uppers = [50, 70, 70]
-    cut_lower, cut_upper, corner = 80, TOP_UPPER_DEPTH, 70
+    start, cut_lower, cut_upper, corner = 80, LOWER_DEPTH, TOP_UPPER_DEPTH, 70
+    # (start: where the lower row begins, past the dead corner beside KT1)
     fridge_w, fridge_d, fridge_h = 90, 70, 190
-    lower_end = cut_lower + sum(w for _, w in lower)
+    lower_end = start + sum(w for _, w in lower)
     length = lower_end + fridge_w
     p = Plan("right", "Kitchen - right wall", length, 0, cut_left=TOP_WALL_CUT)
     b = Builder(p, "KR", ltr=True)
@@ -565,7 +688,7 @@ def build_right():
     add("slab", S(cut_lower), S(0), LOWER_DEPTH, 110, SLAB_BOTTOM, SLAB_TOP, views=("top",), in3d=False)
 
     # Lower row, from the end of the cut lower cabinet.
-    pos = cut_lower
+    pos = start
     for n, (kind, w) in enumerate(lower, start=1):
         s1, s0 = S(pos), S(pos + w)
         if kind == "pull-out":
@@ -602,18 +725,21 @@ def build_right():
         b.upper(n, S(pos + w), S(pos), bottom_frame=(n != 2))
         pos += w
 
+    # The wall above the slab, from the corner section to the fridge.
+    add("backsplash", S(lower_end), S(corner), 0, 0.5, SLAB_TOP, UPPER_BOTTOM)
+
     # Fridge.
     add("appliance", S(length), S(lower_end), 0, fridge_d, 0, fridge_h, views=views)
     p.compartments.append(Compartment(S(length), S(lower_end), 0, fridge_h, "Fridge", False))
 
-    marks = [0, cut_lower] + [cut_lower + sum(w for _, w in lower[:k + 1]) for k in range(3)]
+    marks = [0, start] + [start + sum(w for _, w in lower[:k + 1]) for k in range(3)]
     p.width_marks = sorted(S(m) for m in marks + [length])
     upper_marks = [0, cut_upper, corner, corner + 5]
     for w in uppers:
         upper_marks.append(upper_marks[-1] + w)
     p.extra_dims += [("front", "s", S(c), S(a), CEILING + 4)
                      for a, c in zip(upper_marks, upper_marks[1:])]
-    sink0 = cut_lower + lower[0][1]
+    sink0 = start + lower[0][1]
     sink1 = sink0 + lower[1][1]
     p.extra_dims += [("front", "s", S(sink1), S(sink0), SLAB_TOP + 6),
                      ("front", "z", 0, fridge_h, S(length) + 6),
@@ -658,6 +784,7 @@ CHAR_WIDTH = 0.6              # average glyph width, in font sizes
 class Svg:
     def __init__(self):
         self.parts = []
+        self.defs = []
 
     def rect(self, x0, y0, x1, y1, fill, stroke=COLORS["line"], width=0.15, extra=""):
         x0, x1 = min(x0, x1), max(x0, x1)
@@ -700,8 +827,10 @@ class Svg:
 
     def render(self, width, height):
         body = "\n  ".join(self.parts)
-        return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.1f} {height:.1f}" '
-                f'width="{width * 4:.0f}" height="{height * 4:.0f}">\n'
+        defs = f'  <defs>{"".join(self.defs)}</defs>\n' if self.defs else ""
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" '
+                f'xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {width:.1f} {height:.1f}" '
+                f'width="{width * 4:.0f}" height="{height * 4:.0f}">\n{defs}'
                 f'  <rect width="100%" height="100%" fill="white"/>\n  {body}\n</svg>\n')
 
 
@@ -709,7 +838,27 @@ def fmt(v):
     return f"{v:.1f}".rstrip("0").rstrip(".")
 
 
-def draw_plan(plan):
+def surface_pattern(svg, out_dir):
+    """Define the current color set's surface texture (if any) as the SVG
+    pattern "surface": tiled in cm, linked relative to out_dir."""
+    path = texture_path(COLOR_SET)
+    if not path:
+        return
+    from struct import unpack
+    with open(path, "rb") as f:
+        data = f.read()
+    i = 2
+    while data[i + 1] not in (0xC0, 0xC2):              # JPEG frame header: the size
+        i += 2 + unpack(">H", data[i + 2:i + 4])[0]
+    h_px, w_px = unpack(">HH", data[i + 5:i + 9])
+    tw, th = TEXTURE_SIZE, TEXTURE_SIZE * h_px / w_px
+    href = os.path.relpath(path, out_dir)
+    svg.defs.append(f'<pattern id="surface" patternUnits="userSpaceOnUse" width="{tw}" '
+                    f'height="{th:.2f}"><image xlink:href="{href}" href="{href}" '
+                    f'width="{tw}" height="{th:.2f}" preserveAspectRatio="none"/></pattern>')
+
+
+def draw_plan(plan, out_dir):
     margin, gap_title, gap_view = 25, 20, 16   # gap_view: view title to drawing
     width = plan.cut_left + plan.length + plan.cut_right + 2 * margin
     x_right = margin + plan.cut_left + plan.length      # x of s = 0
@@ -718,6 +867,7 @@ def draw_plan(plan):
         return x_right - s
 
     svg = Svg()
+    surface_pattern(svg, out_dir)
     y = 12
     svg.text(width / 2, y, plan.title, 5, weight="bold")
     y += gap_title
@@ -738,7 +888,7 @@ def draw_plan(plan):
         svg.rect(X(plan.length + plan.cut_left), YT(top_d0), X(plan.length), YT(top_d1),
                  COLORS["cut"])
     for box in sorted((b for b in plan.boxes if "top" in b.views), key=lambda b: b.z1):
-        fill = COLORS[box.kind]
+        fill = kind_fill(box.kind)
         if box.outline:
             svg.poly([(X(s), YT(d)) for s, d in box.outline], fill)
         else:
@@ -767,8 +917,51 @@ def draw_plan(plan):
         y = Z(0) + 36
         if view == "front":
             y = color_legend(svg, margin, width, y)
-
     return svg.render(width, y)
+
+
+def draw_end_page(plan, out_dir):
+    """A page of its own for plan.end_view, with heights and the color legend."""
+    title, items, marks, _ = plan.end_view
+    margin = 25
+    width = 2 * margin + 10 + marks[-1] + 40
+    svg = Svg()
+    surface_pattern(svg, out_dir)
+    svg.text(width / 2, 12, "Kitchen - bar table", 5, weight="bold")
+    y = draw_end_view(svg, plan, margin, 30)
+    y = color_legend(svg, margin, width, y)
+    return svg.render(width, y)
+
+
+def draw_end_view(svg, plan, margin, y):
+    """plan.end_view: d from the wall (cut, on the left) to the right, z up;
+    returns the next y."""
+    title, items, marks, heights = plan.end_view
+    svg.text(margin, y + 2, title, 3.5, anchor="start", weight="bold")
+    top = max(z1 for _, _, _, _, z1, _ in items) + 20
+    oz, ox = y + 16 + top, margin + 10
+
+    def D(d):
+        return ox + d
+
+    def Z(z):
+        return oz - z
+
+    svg.rect(D(-10), Z(top), D(0), Z(0), COLORS["cut"])
+    svg.line(D(-10) - 8, Z(0), D(marks[-1]) + 8, Z(0), COLORS["text"], 0.4)
+    for kind, d0, d1, z0, z1, fid in items:
+        if kind == "front":
+            svg.rect(D(d0), Z(z0), D(d1), Z(z1), front_color(fid))
+            svg.text((D(d0) + D(d1)) / 2, (Z(z0) + Z(z1)) / 2, fid, 2.8, weight="bold")
+        else:
+            svg.rect(D(d0), Z(z0), D(d1), Z(z1), kind_fill(kind))
+    hx = D(marks[-1]) + 14
+    for a, b in zip(heights, heights[1:]):
+        svg.dim(hx, Z(a), hx, Z(b), fmt(b - a))
+    for a, b in zip(marks, marks[1:]):
+        svg.dim(D(a), Z(0) + 9, D(b), Z(0) + 9, fmt(b - a))
+    svg.dim(D(marks[0]), Z(0) + 21, D(marks[-1]), Z(0) + 21, fmt(marks[-1] - marks[0]))
+    return Z(0) + 40
 
 
 def color_legend(svg, margin, width, y):
@@ -788,6 +981,13 @@ def color_legend(svg, margin, width, y):
         svg.rect(x, row, x + sw, row + sh, color)
         svg.text(x + sw + 2, row + sh / 2, body, size, anchor="start")
         x += item
+    if COLOR_SET in SURFACE_TEXTURES:
+        body = f"stone {SURFACE_TEXTURES[COLOR_SET][1]}"
+        item = sw + 2 + CHAR_WIDTH * size * FONT_SCALE * len(body) + 8
+        if x > margin and x + item > width - margin:
+            x, row = margin, row + sh + 6
+        svg.rect(x, row, x + sw, row + sh, "url(#surface)")
+        svg.text(x + sw + 2, row + sh / 2, body, size, anchor="start")
     return row + sh + 16
 
 
@@ -831,7 +1031,7 @@ def draw_elevation(svg, plan, view, X, Z):
         else:
             stroke = "#000000" if box.kind == "bar" else COLORS["line"]
             see_through = ' fill-opacity="0.35"' if box.kind == "glass" else ""
-            svg.rect(X(box.s0), Z(box.z0), X(box.s1), Z(box.z1), COLORS[box.kind], stroke,
+            svg.rect(X(box.s0), Z(box.z0), X(box.s1), Z(box.z1), kind_fill(box.kind), stroke,
                      extra=see_through)
             if box.kind == "appliance":   # shine
                 svg.line(X(box.s1) + 3, Z(box.z1) + 3, X(box.s1) + 10, Z(box.z1) + 3,
@@ -906,7 +1106,7 @@ FRAMES = {
     "right": lambda s, d, L: (-d, s - L),       # right wall, s from the plan's lower end
 }
 # Doors opened less than 90 degrees in the 3D open view, by ID.
-OPEN_ANGLES = {"KLB5da": 80}      # the cabinet under the table
+OPEN_ANGLES = {}
 
 
 def open_door(box):
@@ -960,6 +1160,26 @@ def plank_wood(k):
     k.add_ramp_texture(mat, bsdf, "ShaderNodeTexNoise", 4.0,
                        ((r * 0.75, g * 0.72, b * 0.7), (r * 1.1, g * 1.1, b * 1.1)),
                        mapping_scale=(0.6, 12, 12), Detail=6.0)
+    return mat
+
+
+def stone_texture(k, n):
+    """Color set n's surface texture as a material: the image tiled every
+    TEXTURE_SIZE cm in object space, projected on each face (box mapping)."""
+    import bpy
+    path, label = texture_path(n), SURFACE_TEXTURES[n][1]
+    mat, bsdf = k.principled(f"Stone {label}", (1, 1, 1), 0.15)
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    coord = nodes.new("ShaderNodeTexCoord")
+    mapping = nodes.new("ShaderNodeMapping")
+    mapping.inputs["Scale"].default_value = [100 / TEXTURE_SIZE] * 3
+    tex = nodes.new("ShaderNodeTexImage")
+    tex.image = bpy.data.images.load(path, check_existing=True)
+    tex.projection = 'BOX'
+    tex.projection_blend = 0.2
+    links.new(coord.outputs["Object"], mapping.inputs["Vector"])
+    links.new(mapping.outputs["Vector"], tex.inputs["Vector"])
+    links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     return mat
 
 
@@ -1018,7 +1238,7 @@ def build_curtain(k, col):
     KL2's side, parallel to the top wall, then along KT1's left side up to
     its front corner (plan coordinates of both cabinets)."""
     start = FRAMES["left"](100, 60, LEFT_WALL_LENGTH)        # KL2: s 100, 60 deep
-    end = FRAMES["top"](80 + LOWER_DEPTH, 80, 0)             # KT1: left end, 80 deep
+    end = FRAMES["top"](80 + LOWER_DEPTH, LOWER_DEPTH, 0)    # KT1: left end, its depth
     corner = (end[0], start[1])
     greys = [k.principled(f"Curtain {i + 1}", k.hex_color(c), 0.95)[0]
              for i, c in enumerate(CURTAIN_GREYS)]
@@ -1069,6 +1289,7 @@ def build_scene3d():
         "wall": material("Cabinet Back", COLORS["wall"], 0.8),
         "backsplash": material("Backsplash", COLORS["backsplash"], 0.8),
         "plank": plank_wood(k),
+        "table": None,                        # the same wood, set below
         "metal": material("Black Metal", COLORS["metal"], 0.35),
         "appliance": mats["black"],
         "sink": material("Sink", COLORS["sink"], 0.85),      # matte
@@ -1077,9 +1298,13 @@ def build_scene3d():
         "door_basket": material("Door Shelf", COLORS["door_basket"], 0.5),
         "bar": material("Pull-out Bar", COLORS["bar"], 0.5),
     }
+    kind_mats["table"] = kind_mats["plank"]
     set_mats = {n: {c: material(f"Front {c} {label}", color, 0.35)
                     for c, (color, label) in colors.items()}
                 for n, colors in COLOR_SETS.items()}
+    # Slab, table and backsplash of each set: textured, or the usual materials.
+    surface_mats = {n: (stone_texture(k, n) if n in SURFACE_TEXTURES else None)
+                    for n in COLOR_SETS}
     default_front = material("Front Default", COLORS["front"], 0.35)
 
     kitchen_col = k.collection("Kitchen")
@@ -1123,6 +1348,22 @@ def build_scene3d():
             if box.kind == "bowl":
                 bowls.append(box)
                 continue
+            if box.kind in SET_KINDS:
+                # One per front group, as their material follows the color set.
+                for (state, n), col in groups.items():
+                    if box.kind == "plank" and "other" in set_mats[n]:
+                        mat = set_mats[n]["other"]
+                    elif box.kind == "foot":
+                        mat = set_mats[n].get(front_key(FOOT_LIKE, n), default_front)
+                    elif box.kind in SURFACE_KINDS and surface_mats[n]:
+                        mat = surface_mats[n]
+                    else:
+                        mat = kind_mats[box.kind]
+                    obj = place(f"{label} {state} {n}", box.s0, box.s1, box.d0, box.d1, box.z0,
+                                box.z1, mat, col, box.outline)
+                    if box.kind == "slab":
+                        slabs.append((box, obj))
+                continue
             obj = place(label, box.s0, box.s1, box.d0, box.d1, box.z0, box.z1,
                         kind_mats[box.kind], kitchen_col, box.outline)
             if box.kind == "slab":
@@ -1143,7 +1384,7 @@ def build_scene3d():
 
         for fid, box in fronts.items():
             for (state, n), col in groups.items():
-                key = palette_key(fid)
+                key = front_key(fid, n)
                 mat = set_mats[n].get(key, default_front)
                 if state == "Closed" or box.front["hinge"] == "fixed":
                     place(f"{fid} {state} {n}", box.s0, box.s1, box.d0, box.d1,
@@ -1168,9 +1409,25 @@ def build_scene3d():
     return k, scene
 
 
+# What the saved Blender file shows when opened (the other variants stay in
+# the Outliner, excluded).
+SHOWN_LAYOUT, SHOWN_BATHROOM, SHOWN_COLORS, SHOW_MEASURES = 9, "c", 3, False
+
+
 def build_blend(path):
     import bpy
-    build_scene3d()
+    k, scene = build_scene3d()
+    layers = scene.view_layers[0].layer_collection.children
+    for n in k.LAYOUTS:
+        layers[f"Layout {n}"].exclude = n != SHOWN_LAYOUT
+    for b in k.BATHROOM_LAYOUTS:
+        layers[f"Bathroom {b}"].exclude = b != SHOWN_BATHROOM
+    for name in k.CLOSET_VARIANTS:
+        layers[name].exclude = name != k.closet_variant(SHOWN_LAYOUT)
+    for layer in layers:
+        if layer.name.startswith("Kitchen Fronts"):
+            layer.exclude = layer.name != f"Kitchen Fronts Closed colors{SHOWN_COLORS}"
+    layers["Measures"].exclude = not SHOW_MEASURES
     bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(path))
 
 
@@ -1181,6 +1438,7 @@ def build_blend(path):
 # the kitchen as plain cabinet outlines, and each room's measures.
 
 KITCHEN_OUTLINE = "#e2e2e2"
+APARTMENT_COLORS = 3              # the kitchen's color set on the apartment plans
 
 
 def hull(points):
@@ -1225,17 +1483,17 @@ def build_apartment_svgs(out_dir):
     layers = scene.view_layers[0].layer_collection.children
     for n in k.LAYOUTS:
         for bath in k.BATHROOM_LAYOUTS:
-            closet = n in k.CLOSET_LAYOUTS
+            variant = k.closet_variant(n)
             others = {f"Layout {m}" for m in k.LAYOUTS if m != n}
             others |= {f"Bathroom {b}" for b in k.BATHROOM_LAYOUTS if b != bath}
-            others.add("No Closet" if closet else "Bedroom 1 Closet")
+            others |= {name for name in k.CLOSET_VARIANTS if name != variant}
             # Only layout n, bathroom `bath` and the closet variant switched on.
             for m in k.LAYOUTS:
                 layers[f"Layout {m}"].exclude = m != n
             for b in k.BATHROOM_LAYOUTS:
                 layers[f"Bathroom {b}"].exclude = b != bath
-            layers["Bedroom 1 Closet"].exclude = not closet
-            layers["No Closet"].exclude = closet
+            for name in k.CLOSET_VARIANTS:
+                layers[name].exclude = name != variant
             bpy.context.view_layer.update()
             path = os.path.join(out_dir, f"apartment_layout{n}{bath}.svg")
             apartment_svg(k, scene, path, f"Apartment - layout {n}, bathroom {bath}", others,
@@ -1243,7 +1501,9 @@ def build_apartment_svgs(out_dir):
 
 
 def apartment_svg(k, scene, path, title, skipped_layouts, bath):
+    global COLOR_SET
     import bpy
+    COLOR_SET = APARTMENT_COLORS
     W, H, T = k.APT_WIDTH, k.APT_HEIGHT, k.THICK_WALL
     pad, margin, title_h = 50, 25, 25
     x_min, y_max = -W - T - pad, T + pad
@@ -1254,6 +1514,7 @@ def apartment_svg(k, scene, path, title, skipped_layouts, bath):
         return margin + x - x_min, margin + title_h + y_max - y
 
     svg = Svg()
+    surface_pattern(svg, os.path.dirname(os.path.abspath(path)))
     svg.text(width / 2, margin, title, 5, weight="bold")
     svg.poly([P(x, y) for x, y in k.apartment_outline()], "#fafafa")
 
@@ -1263,7 +1524,8 @@ def apartment_svg(k, scene, path, title, skipped_layouts, bath):
     for obj in scene.objects:
         cols = {c.name for c in obj.users_collection}
         if (obj.type != 'MESH' or obj.name == "Ceiling" or cols & skipped
-                or any(c.startswith("Kitchen Fronts") for c in cols)):
+                or any(c.startswith("Kitchen Fronts") or c.endswith("Doors Open")
+                       for c in cols)):
             continue
         fill = material_color(obj)
         if obj.material_slots and obj.material_slots[0].material.name == "White Wall":
@@ -1277,7 +1539,8 @@ def apartment_svg(k, scene, path, title, skipped_layouts, bath):
             verts = [mw @ obj.data.vertices[i].co for i in face.vertices]
             outline = [(v.x * 100, v.y * 100) for v in verts]
             shapes.append((max(v.z for v in verts) * 100, outline, fill))
-    # The kitchen, simplified: outlines of the cabinets, slab, table and fridge.
+    # The kitchen, simplified: outlines of the cabinets, slab, table and fridge,
+    # in color set APARTMENT_COLORS.
     for plan_name, build in PLANS.items():
         plan = build()
         frame = FRAMES[plan_name]
@@ -1287,8 +1550,8 @@ def apartment_svg(k, scene, path, title, skipped_layouts, bath):
             corners = [frame(s, d, plan.length) for s in (box.s0, box.s1) for d in (box.d0, box.d1)]
             if box.outline:
                 corners = [frame(s, d, plan.length) for s, d in box.outline]
-            fill = {"slab": COLORS["slab"], "plank": COLORS["plank"],
-                    "appliance": COLORS["appliance"]}.get(box.kind, KITCHEN_OUTLINE)
+            fill = (kind_fill(box.kind) if box.kind in SET_KINDS + ("appliance",)
+                    else KITCHEN_OUTLINE)
             shapes.append((box.z1, hull(corners) if not box.outline else corners, fill))
     for _, outline, fill in sorted(shapes, key=lambda shape: shape[0]):
         if len(outline) >= 3:
@@ -1334,10 +1597,16 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     for COLOR_SET in COLOR_SETS:
         for name, build in PLANS.items():
+            plan = build()
             path = os.path.join(args.out, f"kitchen_{name}_colors{COLOR_SET}.svg")
             with open(path, "w") as f:
-                f.write(draw_plan(build()))
+                f.write(draw_plan(plan, args.out))
             print(path)
+            if plan.end_view:                   # the bar table, a page of its own
+                path = os.path.join(args.out, f"kitchen_table_colors{COLOR_SET}.svg")
+                with open(path, "w") as f:
+                    f.write(draw_end_page(plan, args.out))
+                print(path)
 
 
 if __name__ == "__main__":

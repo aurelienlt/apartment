@@ -16,6 +16,7 @@ views/
 
 # Images, PDFs and archives (photos, scans, exports)
 *.jpg
+!textures/*.jpg
 *.jpeg
 *.png
 *.pdf
