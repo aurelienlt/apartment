@@ -21,3 +21,5 @@ views/
 *.png
 *.pdf
 *.zip
+*.svg
+*.odg
